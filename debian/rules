@@ -18,7 +18,7 @@ override_dh_usrlocal:
 	
 override_dh_gencontrol:
 	dh_gencontrol $@
-	sed --in-place= 's/Architecture: .*/Architecture: armv7a-vfp-neon/' debian/teststand/DEBIAN/control
+	sed --in-place= 's/Architecture: .*/Architecture: armv7a-vfp/' debian/teststand/DEBIAN/control
 	sed --in-place= 's,invoke-rc.d teststand,/etc/init.d/teststand,' debian/teststand/DEBIAN/post*
 	sed --in-place= 's,invoke-rc.d teststand,/etc/init.d/teststand,' debian/teststand/DEBIAN/pre*
 
