@@ -1,3 +1,9 @@
+teststand (1.0-1) stable; urgency=medium
+
+  * Fixing architecture name
+
+ -- Patrick Plenefisch <phplenefisch@wpi.edu>  Mon, 28 Sep 2015 18:40:05 -0400
+
 teststand (1.0) unstable; urgency=low
 
   * Initial release
