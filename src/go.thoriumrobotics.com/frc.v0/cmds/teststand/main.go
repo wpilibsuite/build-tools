@@ -25,7 +25,7 @@ func main() {
 	}
 
 	name := getArg("name", os.Getenv("USER"))
-	addr := getArg("addr", "10.1.90.2:8080")
+	addr := getArg("addr", "127.0.0.1:8080")
 
 	switch os.Args[1] {
 	case "take", "--take", "t":

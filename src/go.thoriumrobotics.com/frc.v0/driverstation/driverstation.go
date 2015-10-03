@@ -49,7 +49,7 @@ func New(team int32) *DS {
 // Connect sets up the send and receive UDP connections.
 func (ds *DS) Connect() error {
 	var err error
-	ds.send, err = net.Dial("udp", fmt.Sprintf("10.%d.%d.2:%d", ds.team/100, ds.team%100, send_port))
+	ds.send, err = net.Dial("udp", fmt.Sprintf("127.0.0.1:%d", send_port))
 	if err != nil {
 		return err
 	}
