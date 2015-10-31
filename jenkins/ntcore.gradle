@@ -5,7 +5,7 @@ task ntcoreDesktopZip(type: Zip) {
     classifier = 'desktop'
     destinationDir = buildDir
 
-    fileTree(dir: 'ntcore-zip', include: '*.zip').each { zip ->
+    fileTree(dir: 'ntcore-zip', include: '**/*.zip').each { zip ->
         from zipTree(zip)
     }
 }
@@ -17,7 +17,7 @@ task ntcoreDesktopJar(type: Jar) {
     classifier = 'desktop'
     destinationDir = buildDir
 
-    fileTree(dir: 'ntcore-jar', include: ['*.zip', '*.jar'], exclude: ['*javadoc*', '*sources*']).each { zip ->
+    fileTree(dir: 'ntcore-jar', include: ['**/*.zip', '**/*.jar'], exclude: ['*javadoc*', '*sources*']).each { zip ->
         from zipTree(zip)
     }
 }
