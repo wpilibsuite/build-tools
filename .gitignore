@@ -3,3 +3,6 @@
 .#*
 flymake_*
 build/
+.gradle/
+*.jar
+*.zip
