@@ -5,16 +5,18 @@ apply plugin: 'maven-publish'
 ext.buildFiles = ['build']
 
 if (!project.hasProperty('repo')) {
-    println 'No repository specified! Publications will be published to maven local.'
+    ext.repo = 'development'
 } else {
     publishing {
         repositories {
             maven {
-                url "${System.getProperty('user.home')}/releases/maven/$repo"
+                url "${System.getProperty('user.home')}/releases/maven"
             }
         }
     }
 }
+
+ext.useExtension = repo != 'release'
 
 // First is the ntcore tasks. These will extract all of the dependencies built on the other computers
 // and create an ntcore-desktop jar/zip, with all of the binaries necessary to run ntcore on x86 and x64

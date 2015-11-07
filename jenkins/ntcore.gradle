@@ -2,7 +2,7 @@ task ntcoreDesktopZip(type: Zip) {
     description = 'Creates the ntcore-desktop.zip file, with the contents of all zip files in ntcore-zip'
     group = 'ntcore'
     baseName = 'ntcore'
-    classifier = 'desktop'
+    classifier = "desktop${useExtension ? '-' + repo : ''}"
     destinationDir = buildDir
 
     fileTree(dir: 'ntcore-zip', include: '**/*.zip').each { zip ->
@@ -14,7 +14,7 @@ task ntcoreDesktopJar(type: Jar) {
     description = 'Creates the ntcore-desktop.jar file, with the contents of all zip and jar files in ntcore-jar'
     group = 'ntcore'
     baseName = 'ntcore'
-    classifier = 'desktop'
+    classifier = "desktop${useExtension ? '-' + repo : ''}"
     destinationDir = buildDir
 
     fileTree(dir: 'ntcore-jar', include: ['**/*.zip', '**/*.jar'], exclude: ['*javadoc*', '*sources*']).each { zip ->
