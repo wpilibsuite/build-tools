@@ -40,3 +40,7 @@ publishing {
         }
     }
 }
+
+task clean(type: Delete) {
+    delete buildDir
+}

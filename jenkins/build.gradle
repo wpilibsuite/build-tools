@@ -1,12 +1,14 @@
 // The various tasks that jenkins needs to do are split up by project, with each in their own
 // gradle file.
-apply plugin: 'maven-publish'
 
-ext.buildFiles = ['build']
+allprojects {
+    apply plugin: 'maven-publish'
 
-if (!project.hasProperty('repo')) {
-    ext.repo = 'development'
-} else {
+    if (!project.hasProperty('repo')) {
+        ext.repo = 'development'
+    }
+    ext.useExtension = repo != 'release'
+
     publishing {
         repositories {
             maven {
@@ -16,22 +18,3 @@ if (!project.hasProperty('repo')) {
     }
 }
 
-ext.useExtension = repo != 'release'
-
-// First is the ntcore tasks. These will extract all of the dependencies built on the other computers
-// and create an ntcore-desktop jar/zip, with all of the binaries necessary to run ntcore on x86 and x64
-// on Windows, Mac, and Linux. This assumes that the ntcore-(windows|mac|linux).(jar|zip) files have been
-// copied from their respective projects into "<clone dir>/jenkins/ntcore-jars" and "<clone dir>/jenkins/ntcore-zips",
-// respectively. If you wish to add any new files to the uberjar or uberzip, simply add it to a zip file and copy
-// it to the target directory before running the ntcore task.
-apply from: 'ntcore.gradle'
-
-task clean(type: Delete) {
-    description = 'Cleans all outputs'
-    group = 'Build'
-    doLast {
-        buildFiles.each {
-            delete it
-        }
-    }
-}
