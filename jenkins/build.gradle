@@ -7,12 +7,10 @@ allprojects {
     if (!project.hasProperty('repo')) {
         ext.repo = 'development'
     }
-    ext.useExtension = repo != 'release'
-
     publishing {
         repositories {
             maven {
-                url "${System.getProperty('user.home')}/releases/maven"
+                url "${System.getProperty('user.home')}/releases/maven/$repo"
             }
         }
     }
