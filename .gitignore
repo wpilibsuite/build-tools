@@ -6,3 +6,11 @@ build/
 .gradle/
 *.jar
 *.zip
+teststand_*
+*.a
+*.debhelper
+*.log
+*.substvars
+*/debian/files
+bin
+teststand/debian/teststand*
