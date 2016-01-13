@@ -24,4 +24,7 @@ override_dh_gencontrol:
 
 override_dh_strip:
 	DEB_HOST_GNU_TYPE=arm-frc-linux-gnueabi dh_strip $@
+	
+override_dh_builddeb:
+	dh_builddeb $@ -- -Zgzip
 # armv7a-vfp-neon

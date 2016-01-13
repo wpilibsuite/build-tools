@@ -1,3 +1,9 @@
+teststand (1.2-1) stable; urgency=medium
+
+  * support DS 2015
+
+ -- Patrick Plenefisch <phplenefisch@wpi.edu>  Fri, 04 Dec 2015 13:08:28 -0500
+
 teststand (1.0-1) stable; urgency=medium
 
   * Fixing architecture name

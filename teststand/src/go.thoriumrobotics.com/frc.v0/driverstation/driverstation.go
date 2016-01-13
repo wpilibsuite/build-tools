@@ -2,7 +2,6 @@ package driverstation
 
 import (
 	"fmt"
-	"hash/crc32"
 	"log"
 	"net"
 	"sync"
@@ -86,7 +85,7 @@ func (ds *DS) Run() {
 			if r.err != nil {
 				log.Fatal(r.err)
 			}
-			if r.n != 1024 {
+			if r.n < 6  {
 				log.Fatal("Didn't receive full packet.")
 			}
 			// TODO: log.Println("Received message.")
@@ -153,41 +152,27 @@ func (ds *DS) receive() <-chan *read {
 }
 
 func (ds *DS) packData() []byte {
-	buff := make([]byte, 1024)
+	buff := make([]byte, 6)
 	ds.m.Lock()
 	defer ds.m.Unlock()
 
 	// Add loops (2 bytes)
 	buff[0] = byte(ds.loop >> 8)
 	buff[1] = byte(ds.loop)
+	
+	buff[2] = 0x01
 
 	// Add Status (4 bytes)
-	buff[2] = ds.status()
-	buff[3] = 0xFF // Digital Inputs
-	buff[4] = byte(ds.team >> 8)
-	buff[5] = byte(ds.team)
+	buff[3] = ds.status()
+	buff[4] = 0x10 // start program
 
 	// TODO: Alliance R/B, 1/2/3 (2 bytes)
 	if ds.alliance == Red {
-		buff[6] = 0x52
+		buff[5] = byte(ds.station) - 1
 	} else {
-		buff[6] = 0x42
-	}
-	buff[7] = 0x30 + byte(ds.station) // Station 1, 2 or 3
-
-	// TODO: Joystick data (???)
-
-	// DS Version
-	for i, b := range []byte(version_number) {
-		buff[72+i] = b
+		buff[5] = 2 + byte(ds.station)
 	}
 
-	// crc32 (last 4 bytes)
-	crc := crc32.ChecksumIEEE(buff) // IEEE style?
-	buff[1020] = byte(crc >> 24)
-	buff[1021] = byte(crc >> 16)
-	buff[1022] = byte(crc >> 8)
-	buff[1023] = byte(crc)
 	return buff
 }
 
@@ -203,21 +188,21 @@ func (ds *DS) packData() []byte {
 // 6: Not E-Stopped
 // 7: Reset
 const (
-	flagFPGAChecksum byte = 1 << iota
-	flagTest
-	flagResync
-	flagFMSAttached
+	flagTest byte = 1 << iota
 	flagAuto
 	flagEnabled
-	flagNotEStopped
-	flagResetFlag
+	flagFMSAttached
+	flagReserved4
+	flagReserved5
+	flagReserved6
+	flagEStopped
 )
 
 // status returns the status byte.
 //
 // Note: FPGA Checksum, FMS Attached are never used.
 func (ds *DS) status() byte {
-	var b byte = flagNotEStopped
+	var b byte = 0
 
 	if ds.state == Auto {
 		b |= flagAuto
@@ -229,10 +214,6 @@ func (ds *DS) status() byte {
 		b |= flagEnabled
 	}
 
-	if ds.sync > 0 {
-		b |= flagResync
-		ds.sync -= 1
-	}
 
 	return b
 }
