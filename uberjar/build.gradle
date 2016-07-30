@@ -1,0 +1,164 @@
+// The various tasks that jenkins needs to do are split up by project, with each in their own
+// gradle file.
+
+apply plugin: ProductCombinerPlugin
+
+products {
+    ntcoreJava {
+        group = 'edu.wpi.first.wpilib.networktables.java'
+        productName = 'NetworkTables'
+        versionNum = '3.0.0-SNAPSHOT'
+        fileNameInclude = 'ntcore'
+        excludes = ['**/*javadoc*', '**/*sources*', '**/*arm*']
+        armInclude = '**/ntcore-arm*.jar'
+        sourceInclude = '**/ntcore-source*.jar'
+        docInclude = '**/ntcore-javadoc*.jar'
+        docClassifier = 'javadoc'
+        type = Type.Jar
+    }
+    ntcoreCpp {
+        group = 'edu.wpi.first.wpilib.networktables.cpp'
+        productName = 'NetworkTables'
+        versionNum = '3.0.0-SNAPSHOT'
+        fileNameInclude = 'ntcore'
+        excludes = ['**/*javadoc*', '**/*sources*', '**/*arm*']
+        armInclude = '**/ntcore-arm*.zip'
+        sourceInclude = '**/ntcore-source*.zip'
+        includeDocs = false
+        type = Type.Zip
+    }
+    wpiutil {
+        group = 'edu.wpi.first.wpilib'
+        productName = 'wpiutil'
+        versionNum = '1.0.0-SNAPSHOT'
+        fileNameInclude = 'wpiutil'
+        excludes = ['**/*javadoc*', '**/*sources*', '**/*arm*']
+        armInclude = '**/wpiutil-arm*.zip'
+        sourceInclude = '**/wpiutil-source*.zip'
+        includeDocs = false
+        type = Type.Zip
+    }
+}
+
+class ProductCombinerPlugin implements Plugin<Project> {
+    void apply(Project project) {
+        // Apply and set up the maven-publish plugin
+        project.apply plugin: 'maven-publish'
+        if (!project.hasProperty('repo')) {
+            project.extensions.repo = 'development'
+        }
+
+        project.publishing {
+            repositories {
+                maven {
+                    url "${System.getProperty('user.home')}/releases/maven/${project.repo}"
+                }
+            }
+        }
+
+        def artifacts = project.container(Product)
+        project.afterEvaluate {
+            project.products.all {
+                def isJar = type == Type.Jar
+
+                if (sources == null) {
+                    def include = "**/*$fileNameInclude*${isJar ? '.jar' : '.zip'}"
+                    excludes << "${project.buildDir}/**"
+                    sources = project.fileTree(dir: project.projectDir, include: include, exclude: excludes)
+                    sources.each { println it }
+                }
+
+                if (armFile == null) {
+                    armFile = getFile(project.projectDir, armInclude, project)
+                }
+
+                if (docFile == null && includeDocs) {
+                    docFile = getFile(project.projectDir, docInclude, project)
+                }
+
+                if (sourceFile == null) {
+                    sourceFile = getFile(project.projectDir, sourceInclude, project)
+                }
+
+                def mainArt = project.task("${name}${isJar ? 'Jar' : 'Zip'}", type: isJar ? Jar : Zip) {
+                    description = "Creates the $name."
+                    group = productName
+                    baseName = productName
+                    classifier = mainClassifier
+                    destinationDir = project.buildDir
+                    duplicatesStrategy = 'exclude'
+
+                    sources.each { from project.zipTree(it) }
+                }
+
+                project.publishing {
+                    publications {
+                        "${name}"(MavenPublication) {
+                            artifact(mainArt) {
+                                classifier = mainClassifier
+                            }
+
+                            artifact(armFile) {
+                                classifier = armClassifier
+                            }
+
+                            artifact(sourceFile) {
+                                classifier = sourceClassifier
+                            }
+
+                            if (includeDocs) {
+                                artifact(docFile) {
+                                    classifier = docClassifier
+                                }
+                            }
+
+                            groupId = group
+                            artifactId = productName
+                            version = versionNum
+                        }
+                    }
+                }
+            }
+        }
+        project.extensions.products = artifacts
+    }
+
+    File getFile(dir, includes, project) {
+        def file = project.fileTree(dir: dir, include: includes).files[0]
+        if (file == null) {
+            throw new Exception("Could not find $includes in $dir")
+        }
+        return file
+    }
+
+}
+
+class Product {
+    final String name
+    String group
+    String productName
+    String versionNum
+    String mainClassifier = 'desktop'
+    String fileNameInclude
+    List<String> excludes = []
+    FileTree sources
+    String sourceInclude
+    File sourceFile
+    String sourceClassifier = 'sources'
+    boolean includeDocs
+    String docInclude
+    File docFile
+    String docClassifier
+    String armInclude
+    File armFile
+    String armClassifier = 'arm'
+    Type type
+
+    Product(String name) {
+        this.name = name
+    }
+}
+
+enum Type {
+    Jar, Zip
+}
