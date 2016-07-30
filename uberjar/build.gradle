@@ -40,6 +40,10 @@ products {
     }
 }
 
+task clean(type: Delete) {
+    delete project.buildDir
+}
+
 class ProductCombinerPlugin implements Plugin<Project> {
     void apply(Project project) {
         // Apply and set up the maven-publish plugin
