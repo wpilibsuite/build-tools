@@ -64,24 +64,24 @@ class ProductCombinerPlugin implements Plugin<Project> {
         project.afterEvaluate {
             project.products.all {
                 def isJar = type == Type.Jar
+                def dir = 'products'
 
                 if (sources == null) {
                     def include = "**/*$fileNameInclude*${isJar ? '.jar' : '.zip'}"
-                    excludes << "${project.buildDir}/**"
-                    sources = project.fileTree(dir: project.projectDir, include: include, exclude: excludes)
-                    sources.each { println it }
+                    excludes << "${project.buildDir}/**/*"
+                    sources = project.fileTree(dir: dir, include: include, exclude: excludes)
                 }
 
                 if (armFile == null) {
-                    armFile = getFile(project.projectDir, armInclude, project)
+                    armFile = getFile(dir, armInclude, project)
                 }
 
                 if (docFile == null && includeDocs) {
-                    docFile = getFile(project.projectDir, docInclude, project)
+                    docFile = getFile(dir, docInclude, project)
                 }
 
                 if (sourceFile == null) {
-                    sourceFile = getFile(project.projectDir, sourceInclude, project)
+                    sourceFile = getFile(dir, sourceInclude, project)
                 }
 
                 def mainArt = project.task("${name}${isJar ? 'Jar' : 'Zip'}", type: isJar ? Jar : Zip) {
