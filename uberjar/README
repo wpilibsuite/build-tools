@@ -1,0 +1,3 @@
+# UberJar
+
+This creates the -desktop jar and zip files for distribution in the WPILib Maven repository, where they are used by other WPILib Suite tools, as well as 3rd parties. Because we must publish everything for an artifact at the same time, we also publish the arm, sources, and javadoc classifiers for elements as well.
