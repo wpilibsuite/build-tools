@@ -166,3 +166,7 @@ class Product {
 enum Type {
     Jar, Zip
 }
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '3.0'
+}
