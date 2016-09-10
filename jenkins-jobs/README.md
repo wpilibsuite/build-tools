@@ -12,7 +12,7 @@ These scripts generate the jobs on Jenkins. Each job is stored in a separate scr
 The following plugins are needed to use the Jobs DSL:
 
 * Job DSL
-* Hudson Post build task
+* Post Build Script
 
 Documentation for the Jobs DSL is available [here](https://github.com/jenkinsci/job-dsl-plugin/wiki).
 

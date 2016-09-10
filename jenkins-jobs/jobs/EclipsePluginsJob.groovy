@@ -11,6 +11,22 @@ def releaseJob = job('Eclipse Plugins') {
 setupBuildSteps(releaseJob)
 setupPublish(releaseJob, releaseFolder)
 
+def prJob = job('Eclipse Plugins PR') {
+    scm {
+        git('https://github.com/333fred/EclipsePlugins.git')
+    }
+    triggers {
+        githubPullRequest {
+            admins(['333fred', 'PeterJohnson', 'bradamiller', 'Kevin-OConnor'])
+            orgWhitelist('wpilibsuite')
+            triggerPhrase('OK to test')
+            useGitHubHooks()
+        }
+    }
+}
+
+setupBuildSteps(prJob)
+
 def setupBuildSteps(job) {
     job.with {
         steps {
