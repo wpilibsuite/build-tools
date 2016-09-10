@@ -1,0 +1,24 @@
+apply plugin: 'groovy'
+
+sourceSets {
+    jobs {
+        groovy {
+            srcDirs 'src/main/jobs'
+        }
+    }
+}
+
+repositories {
+    jcenter()
+    maven {
+        url 'https://repo.jenkins-ci.org/public/'
+    }
+}
+
+dependencies {
+    compile 'org.jenkins-ci.plugins:job-dsl-core:1.50'
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '3.0'
+}
