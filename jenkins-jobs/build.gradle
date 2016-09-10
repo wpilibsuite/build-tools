@@ -3,7 +3,7 @@ apply plugin: 'groovy'
 sourceSets {
     jobs {
         groovy {
-            srcDirs 'src/main/jobs'
+            srcDirs 'jobs'
         }
     }
 }
