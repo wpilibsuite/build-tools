@@ -25,8 +25,9 @@ def setupPublish(job, location) {
         publishers {
             postBuildScripts {
                 steps {
-                    shell("rm -rf $location && mkdir -p $location && cp -r ./edu.wpi.first.wpilib" +
-                            ".updatesite/target/site/* $location")
+                    shell("rm -rf $location && " +
+                          "mkdir -p $location && " +
+                          "cp -r ./edu.wpi.first.wpilib.plugins.updatesite/target/site/* $location")
                 }
             }
         }
