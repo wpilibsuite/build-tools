@@ -8,24 +8,39 @@ def releaseJob = job('Eclipse Plugins') {
     }
 }
 
+setupProperties(releaseJob)
 setupBuildSteps(releaseJob)
 setupPublish(releaseJob, releaseFolder)
 
 def prJob = job('Eclipse Plugins PR') {
     scm {
-        git('https://github.com/333fred/EclipsePlugins.git')
+        git {
+            remote {
+                url('https://github.com/333fred/EclipsePlugins.git')
+                refspec('+refs/pull/*:refs/remotes/origin/pr/*')
+            }
+            branch('${sha1}')
+        }
     }
     triggers {
         githubPullRequest {
             admins(['333fred', 'PeterJohnson', 'bradamiller', 'Kevin-OConnor'])
             orgWhitelist('wpilibsuite')
-            triggerPhrase('OK to test')
             useGitHubHooks()
         }
     }
 }
 
+setupProperties(prJob)
 setupBuildSteps(prJob)
+
+def setupProperties(job) {
+    job.with {
+        properties {
+            githubProjectUrl('https://github.com/333fred/EclipsePlugins')
+        }
+    }
+}
 
 def setupBuildSteps(job) {
     job.with {
@@ -42,8 +57,8 @@ def setupPublish(job, location) {
             postBuildScripts {
                 steps {
                     shell("rm -rf $location && " +
-                          "mkdir -p $location && " +
-                          "cp -r ./edu.wpi.first.wpilib.plugins.updatesite/target/site/* $location")
+                            "mkdir -p $location && " +
+                            "cp -r ./edu.wpi.first.wpilib.plugins.updatesite/target/site/* $location")
                 }
             }
         }
