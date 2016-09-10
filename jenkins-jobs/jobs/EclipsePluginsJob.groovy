@@ -23,9 +23,11 @@ def setupBuildSteps(job) {
 def setupPublish(job, location) {
     job.with {
         publishers {
-            postBuildTask {
-                task('BUILD SUCCESSFUL', "rm -rf $location && mkdir -p $location && cp -r ./edu.wpi.first.wpilib" +
-                        ".updatesite/target/site/* $location")
+            postBuildScripts {
+                steps {
+                    shell("rm -rf $location && mkdir -p $location && cp -r ./edu.wpi.first.wpilib" +
+                            ".updatesite/target/site/* $location")
+                }
             }
         }
     }
