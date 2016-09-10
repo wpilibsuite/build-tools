@@ -11,6 +11,6 @@ job('Eclipse Plugins') {
         def releaseFolder = "${System.getProperty('user.home')}/releases/release/eclipse/"
         shell("rm -rf $releaseFolder")
         shell("mkdir -p $releaseFolder")
-        shell("cp -r ./edu.wpi.first.wpilib.plugins.updatesite/target/site $releaseFolder")
+        shell("cp -r ./edu.wpi.first.wpilib.plugins.updatesite/target/site/* $releaseFolder")
     }
 }
