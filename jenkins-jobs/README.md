@@ -9,6 +9,11 @@ These scripts generate the jobs on Jenkins. Each job is stored in a separate scr
 * Process Job DSLs → Additional classpath: `src/main/groovy`
 * Publish JUnit test result report → Test report XMLs: `build/test-results/**/*.xml`
 
+The following plugins are needed to use the Jobs DSL:
+
+* Job DSL
+* Hudson Post build task
+
 Documentation for the Jobs DSL is available [here](https://github.com/jenkinsci/job-dsl-plugin/wiki).
 
 This license for this repository can be found [here](license.txt)
