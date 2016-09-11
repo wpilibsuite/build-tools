@@ -16,7 +16,7 @@ def prJob = job('Eclipse Plugins PR') {
     scm {
         git {
             remote {
-                url('https://github.com/333fred/EclipsePlugins.git')
+                url('https://github.com/wpilibsuite/EclipsePlugins.git')
                 refspec('+refs/pull/*:refs/remotes/origin/pr/*')
             }
             branch('${sha1}')
@@ -36,8 +36,9 @@ setupBuildSteps(prJob)
 
 def setupProperties(job) {
     job.with {
+        // Note: The pull request builder plugin will fail without this property set.
         properties {
-            githubProjectUrl('https://github.com/333fred/EclipsePlugins')
+            githubProjectUrl('https://github.com/wpilibsuite/EclipsePlugins')
         }
     }
 }
