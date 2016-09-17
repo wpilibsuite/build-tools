@@ -1,27 +1,26 @@
+setupReleaseBuild('release')
+setupReleaseBuild('stable')
+setupReleaseBuild('beta')
+
 def releaseFolder = "${System.getProperty('user.home')}/releases/release/eclipse/"
-def releaseJob = job('Eclipse Plugins') {
+def developmentJob = job('Eclipse Plugins - Development') {
     scm {
-        git {
-            remote {
-                url('https://github.com/333fred/EclipsePlugins.git')
-            }
-            branch('gradleBuildGeneration')
-        }
+        git('https://github.com/wpilibsuite/EclipsePlugins.git')
     }
     triggers {
         scm('H/15 * * * *')
     }
 }
 
-setupProperties(releaseJob)
-setupBuildSteps(releaseJob, ['releaseType=OFFICIAL'])
-setupPublish(releaseJob, releaseFolder)
+setupProperties(developmentJob)
+setupBuildSteps(developmentJob)
+setupPublish(developmentJob, releaseFolder)
 
 def prJob = job('Eclipse Plugins PR') {
     scm {
         git {
             remote {
-                url('https://github.com/333fred/EclipsePlugins.git')
+                url('https://github.com/wpilibsuite/EclipsePlugins.git')
                 refspec('+refs/pull/*:refs/remotes/origin/pr/*')
             }
             branch('${sha1}')
@@ -43,7 +42,7 @@ def setupProperties(job) {
     job.with {
         // Note: The pull request builder plugin will fail without this property set.
         properties {
-            githubProjectUrl('https://github.com/333fred/EclipsePlugins')
+            githubProjectUrl('https://github.com/wpilibsuite/EclipsePlugins')
         }
     }
 }
@@ -77,4 +76,20 @@ def setupPublish(job, location) {
             }
         }
     }
+}
+
+def setupReleaseBuild(type) {
+    def releaseFolder = "${System.getProperty('user.home')}/releases/$type/eclipse/"
+    def releaseJob = job("Eclipse Plugins - $type") {
+        scm {
+            git('https://github.com/wpilibsuite/EclipsePlugins.git')
+        }
+        triggers {
+            scm('H/15 * * * *')
+        }
+    }
+
+    setupProperties(releaseJob)
+    setupBuildSteps(releaseJob, ['releaseType=OFFICIAL'])
+    setupPublish(releaseJob, releaseFolder)
 }
