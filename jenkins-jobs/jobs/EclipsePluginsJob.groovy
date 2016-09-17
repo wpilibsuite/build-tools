@@ -14,7 +14,7 @@ def releaseJob = job('Eclipse Plugins') {
 }
 
 setupProperties(releaseJob)
-setupBuildSteps(releaseJob, ['releaseType=official'])
+setupBuildSteps(releaseJob, ['releaseType=OFFICIAL'])
 setupPublish(releaseJob, releaseFolder)
 
 def prJob = job('Eclipse Plugins PR') {
