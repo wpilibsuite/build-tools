@@ -1,7 +1,12 @@
 def releaseFolder = "${System.getProperty('user.home')}/releases/release/eclipse/"
 def releaseJob = job('Eclipse Plugins') {
     scm {
-        git('https://github.com/wpilibsuite/EclipsePlugins.git')
+        git {
+            remote {
+                url('https://github.com/333fred/EclipsePlugins.git')
+            }
+            branch('gradleBuildGeneration')
+        }
     }
     triggers {
         scm('H/15 * * * *')
@@ -9,14 +14,14 @@ def releaseJob = job('Eclipse Plugins') {
 }
 
 setupProperties(releaseJob)
-setupBuildSteps(releaseJob)
+setupBuildSteps(releaseJob, ['releaseType=official'])
 setupPublish(releaseJob, releaseFolder)
 
 def prJob = job('Eclipse Plugins PR') {
     scm {
         git {
             remote {
-                url('https://github.com/wpilibsuite/EclipsePlugins.git')
+                url('https://github.com/333fred/EclipsePlugins.git')
                 refspec('+refs/pull/*:refs/remotes/origin/pr/*')
             }
             branch('${sha1}')
@@ -38,16 +43,24 @@ def setupProperties(job) {
     job.with {
         // Note: The pull request builder plugin will fail without this property set.
         properties {
-            githubProjectUrl('https://github.com/wpilibsuite/EclipsePlugins')
+            githubProjectUrl('https://github.com/333fred/EclipsePlugins')
         }
     }
 }
 
-def setupBuildSteps(job) {
+def setupBuildSteps(job, properties = null) {
     job.with {
         steps {
-            gradle('clean')
-            gradle('build')
+            gradle {
+                tasks('clean')
+                tasks('updateDependencies')
+                tasks('build')
+                if (properties != null) {
+                    properties.each { prop ->
+                        switches("-P$prop")
+                    }
+                }
+            }
         }
     }
 }
