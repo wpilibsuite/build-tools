@@ -84,9 +84,6 @@ def setupReleaseBuild(type) {
         scm {
             git('https://github.com/wpilibsuite/EclipsePlugins.git')
         }
-        triggers {
-            scm('H/15 * * * *')
-        }
     }
 
     setupProperties(releaseJob)
