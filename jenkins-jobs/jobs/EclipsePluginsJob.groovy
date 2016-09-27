@@ -2,7 +2,7 @@ setupReleaseBuild('release')
 setupReleaseBuild('stable')
 setupReleaseBuild('beta')
 
-def releaseFolder = "${System.getProperty('user.home')}/releases/release/eclipse/"
+def developmentFolder = "${System.getProperty('user.home')}/releases/development/eclipse/"
 def developmentJob = job('Eclipse Plugins - Development') {
     scm {
         git {
@@ -19,7 +19,7 @@ def developmentJob = job('Eclipse Plugins - Development') {
 
 setupProperties(developmentJob)
 setupBuildSteps(developmentJob)
-setupPublish(developmentJob, releaseFolder)
+setupPublish(developmentJob, developmentFolder)
 
 def prJob = job('Eclipse Plugins PR') {
     scm {
