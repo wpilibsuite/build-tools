@@ -5,7 +5,12 @@ setupReleaseBuild('beta')
 def releaseFolder = "${System.getProperty('user.home')}/releases/release/eclipse/"
 def developmentJob = job('Eclipse Plugins - Development') {
     scm {
-        git('https://github.com/wpilibsuite/EclipsePlugins.git')
+        git {
+            remote {
+                url('https://github.com/wpilibsuite/EclipsePlugins.git')
+            }
+            branch('*/master')
+        }
     }
     triggers {
         scm('H/15 * * * *')
@@ -82,10 +87,12 @@ def setupReleaseBuild(type) {
     def releaseFolder = "${System.getProperty('user.home')}/releases/$type/eclipse/"
     def releaseJob = job("Eclipse Plugins - $type") {
         scm {
-            git('https://github.com/wpilibsuite/EclipsePlugins.git')
-        }
-        triggers {
-            scm('H/15 * * * *')
+            git  {
+                remote {
+                    url('https://github.com/wpilibsuite/EclipsePlugins.git')
+                }
+                branch('*/master')
+            }
         }
     }
 
