@@ -43,7 +43,7 @@ def setupGit(job) {
             git {
                 remote {
                     url('https://github.com/wpilibsuite/RobotBuilder.git')
-                    branch('*/gradle-version-generation')
+                    branch('*/master')
                 }
             }
         }
