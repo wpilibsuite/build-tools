@@ -20,18 +20,21 @@ def prJob = job('RobotBuilder - PR') {
 }
 
 setupProperties(prJob)
+setupXvfb(prJob)
 setupBuildSteps(prJob, false)
 
 def developmentJob = job('Robot Builder - Development')
 
 setupGit(developmentJob)
 setupProperties(developmentJob)
+setupXvfb(prJob)
 setupBuildSteps(developmentJob, true)
 
 def releaseJob = job('Robot Builder - Release')
 
 setupGit(releaseJob)
 setupProperties(releaseJob)
+setupXvfb(releaseJob)
 setupBuildSteps(releaseJob, true, ['releaseType=OFFICIAL'])
 
 def setupGit(job) {
@@ -71,6 +74,14 @@ def setupBuildSteps(job, usePublish, properties = null) {
                     }
                 }
             }
+        }
+    }
+}
+
+def setupXvfb(job) {
+    job.with {
+        wrappers {
+            xvfb('default')
         }
     }
 }
