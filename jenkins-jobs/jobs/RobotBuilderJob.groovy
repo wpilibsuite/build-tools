@@ -2,7 +2,7 @@ def prJob = job('RobotBuilder - PR') {
     scm {
         git {
             remote {
-                url('https://github.com/333fred/RobotBuilder.git')
+                url('https://github.com/wpilibsuite/RobotBuilder.git')
                 refspec('+refs/pull/*:refs/remotes/origin/pr/*')
             }
             // This is purposefully not a GString. This is a jenkins environment
@@ -42,7 +42,7 @@ def setupGit(job) {
         scm {
             git {
                 remote {
-                    url('https://github.com/333fred/RobotBuilder.git')
+                    url('https://github.com/wpilibsuite/RobotBuilder.git')
                     branch('*/gradle-version-generation')
                 }
             }
@@ -57,7 +57,7 @@ def setupProperties(job) {
     job.with {
         // Note: The pull request builder plugin will fail without this property set.
         properties {
-            githubProjectUrl('https://github.com/333fred/RobotBuilder')
+            githubProjectUrl('https://github.com/wpilibsuite/RobotBuilder')
         }
     }
 }
