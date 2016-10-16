@@ -40,6 +40,21 @@ def releaseJob = pipelineJob('ntcore - Release') {
     }
 }
 
+listView('ntcore') {
+    jobs {
+        regex('ntcore.*')
+    }
+    columns {
+        status()
+        weather()
+        name()
+        lastSuccess()
+        lastFailure()
+        lastDuration()
+        buildButton()
+    }
+}
+
 setupProperties(releaseJob)
 
 def setupProperties(job) {
