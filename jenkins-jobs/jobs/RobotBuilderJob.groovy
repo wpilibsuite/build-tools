@@ -23,7 +23,7 @@ setupProperties(prJob)
 setupXvfb(prJob)
 setupBuildSteps(prJob, false)
 
-def developmentJob = job('Robot Builder - Development') {
+def developmentJob = job('RobotBuilder - Development') {
     triggers {
         scm('H/15 * * * *')
     }
@@ -34,7 +34,7 @@ setupProperties(developmentJob)
 setupXvfb(prJob)
 setupBuildSteps(developmentJob, true)
 
-def releaseJob = job('Robot Builder - Release')
+def releaseJob = job('RobotBuilder - Release')
 
 setupGit(releaseJob)
 setupProperties(releaseJob)
