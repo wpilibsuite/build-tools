@@ -22,7 +22,11 @@ def prJob = job('Java Installer - PR') {
 setupProperties(prJob)
 setupBuildSteps(prJob, false)
 
-def developmentJob = job('Java Installer - Development')
+def developmentJob = job('Java Installer - Development') {
+    triggers {
+        scm('H/15 * * * *')
+    }
+}
 
 setupProperties(developmentJob)
 setupGit(developmentJob)
@@ -43,9 +47,6 @@ def setupGit(job) {
                     branch('*/master')
                 }
             }
-        }
-        triggers {
-            scm('H/15 * * * *')
         }
     }
 }
