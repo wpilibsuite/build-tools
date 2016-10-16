@@ -1,17 +1,19 @@
+def basePath = 'ntcore'
+folder(basePath)
 
 ['Windows', 'Mac', 'Linux'].each { platform ->
-    def prJob = job("ntcore $platform - PR") {
+    def prJob = job("$basePath/ntcore $platform - PR") {
         label(platform.toLowerCase())
     }
     setupProperties(prJob)
     setupPrJob(prJob)
 }
 
-def armPrJob = job('ntcore ARM - PR')
+def armPrJob = job("$basePath/ntcore ARM - PR")
 setupProperties(armPrJob)
 setupPrJob(armPrJob)
 
-def developmentJob = pipelineJob('ntcore - Development') {
+def developmentJob = pipelineJob("$basePath/ntcore - Development") {
     definition {
         cps {
             try {
@@ -28,7 +30,7 @@ def developmentJob = pipelineJob('ntcore - Development') {
 
 setupProperties(developmentJob)
 
-def releaseJob = pipelineJob('ntcore - Release') {
+def releaseJob = pipelineJob("$basePath/ntcore - Release") {
     definition {
         cps {
             try {
@@ -37,21 +39,6 @@ def releaseJob = pipelineJob('ntcore - Release') {
                 script(readFileFromWorkspace('pipeline-scripts/ntcore-release.groovy'))
             }
         }
-    }
-}
-
-listView('ntcore') {
-    jobs {
-        regex('ntcore.*')
-    }
-    columns {
-        status()
-        weather()
-        name()
-        lastSuccess()
-        lastFailure()
-        lastDuration()
-        buildButton()
     }
 }
 
