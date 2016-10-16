@@ -1,4 +1,7 @@
-def prJob = job('Java Installer - PR') {
+def basePath = 'Java Installer'
+folder(basePath)
+
+def prJob = job("$basePath/Java Installer - PR") {
     scm {
         git {
             remote {
@@ -22,7 +25,7 @@ def prJob = job('Java Installer - PR') {
 setupProperties(prJob)
 setupBuildSteps(prJob, false)
 
-def developmentJob = job('Java Installer - Development') {
+def developmentJob = job("$basePath/Java Installer - Development") {
     triggers {
         scm('H/15 * * * *')
     }
@@ -32,7 +35,7 @@ setupProperties(developmentJob)
 setupGit(developmentJob)
 setupBuildSteps(developmentJob, true)
 
-def releaseJob = job('Java Installer - Release')
+def releaseJob = job("$basePath/Java Installer - Release")
 
 setupProperties(releaseJob)
 setupGit(releaseJob)
