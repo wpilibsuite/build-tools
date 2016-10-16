@@ -1,4 +1,7 @@
-def prJob = job('RobotBuilder - PR') {
+def basePath = 'RobotBuilder'
+folder(basePath)
+
+def prJob = job("$basePath/RobotBuilder - PR") {
     scm {
         git {
             remote {
@@ -23,7 +26,7 @@ setupProperties(prJob)
 setupXvfb(prJob)
 setupBuildSteps(prJob, false)
 
-def developmentJob = job('RobotBuilder - Development') {
+def developmentJob = job("$basePath/RobotBuilder - Development") {
     triggers {
         scm('H/15 * * * *')
     }
@@ -34,7 +37,7 @@ setupProperties(developmentJob)
 setupXvfb(prJob)
 setupBuildSteps(developmentJob, true)
 
-def releaseJob = job('RobotBuilder - Release')
+def releaseJob = job("$basePath/RobotBuilder - Release")
 
 setupGit(releaseJob)
 setupProperties(releaseJob)
