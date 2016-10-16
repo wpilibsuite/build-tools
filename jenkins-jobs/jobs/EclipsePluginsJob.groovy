@@ -1,9 +1,12 @@
-setupReleaseBuild('release')
-setupReleaseBuild('stable')
-setupReleaseBuild('beta')
+def basePath = 'Eclipse Plugins'
+folder(basePath)
+
+setupReleaseBuild('Release', basePath)
+setupReleaseBuild('Stable', basePath)
+setupReleaseBuild('Beta', basePath)
 
 def developmentFolder = "${System.getProperty('user.home')}/releases/development/eclipse/"
-def developmentJob = job('Eclipse Plugins - Development') {
+def developmentJob = job("$basePath/Eclipse Plugins - Development") {
     scm {
         git {
             remote {
@@ -21,7 +24,7 @@ setupProperties(developmentJob)
 setupBuildSteps(developmentJob)
 setupPublish(developmentJob, developmentFolder)
 
-def prJob = job('Eclipse Plugins PR') {
+def prJob = job("$basePath/Eclipse Plugins PR") {
     scm {
         git {
             remote {
@@ -83,11 +86,11 @@ def setupPublish(job, location) {
     }
 }
 
-def setupReleaseBuild(type) {
-    def releaseFolder = "${System.getProperty('user.home')}/releases/$type/eclipse/"
-    def releaseJob = job("Eclipse Plugins - $type") {
+def setupReleaseBuild(String type, String path) {
+    def releaseFolder = "${System.getProperty('user.home')}/releases/${type.toLowerCase()}/eclipse/"
+    def releaseJob = job("$path/Eclipse Plugins - $type") {
         scm {
-            git  {
+            git {
                 remote {
                     url('https://github.com/wpilibsuite/EclipsePlugins.git')
                 }
