@@ -30,6 +30,9 @@ def developmentJob = job("$basePath/RobotBuilder - Development") {
     triggers {
         scm('H/15 * * * *')
     }
+    publishers {
+        downstream('Eclipse Plugins - Development')
+    }
 }
 
 setupGit(developmentJob)
