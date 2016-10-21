@@ -26,10 +26,12 @@ builds['windows'] = {
 }
 builds['arm'] = {
     node {
-        git 'https://github.com/wpilibsuite/ntcore.git'
-        sh './gradlew clean :arm:wpiutil:build :arm:ntcore:build -PreleaseType=OFFICIAL'
-        stash includes: 'arm/*/build/libs/**/*.jar, arm/ntcore/build/ntcore-arm.zip, ' +
-                'arm/wpiutil/build/wpiutil-arm.zip', name: 'arm'
+        ws("workspace/${env.JOB_NAME}/arm") {
+            git 'https://github.com/wpilibsuite/ntcore.git'
+            sh './gradlew clean :arm:wpiutil:build :arm:ntcore:build -PreleaseType=OFFICIAL'
+            stash includes: 'arm/*/build/libs/**/*.jar, arm/ntcore/build/ntcore-arm.zip, ' +
+                    'arm/wpiutil/build/wpiutil-arm.zip', name: 'arm'
+        }
     }
 }
 
@@ -37,14 +39,16 @@ parallel builds
 
 stage 'combine'
 node {
-    git 'https://github.com/333fred/build-tools.git'
-    sh 'git clean -xfd'
-    dir('uberjar/products') {
-        unstash 'linux'
-        unstash 'mac'
-        unstash 'windows'
-        unstash 'arm'
+    ws("workspace/${env.JOB_NAME}/combine") {
+        git 'https://github.com/333fred/build-tools.git'
+        sh 'git clean -xfd'
+        dir('uberjar/products') {
+            unstash 'linux'
+            unstash 'mac'
+            unstash 'windows'
+            unstash 'arm'
+        }
+        sh 'chmod +x ./uberjar/gradlew'
+        sh 'cd ./uberjar && ./gradlew clean publish -PreleaseType=OFFICIAL'
     }
-    sh 'chmod +x ./uberjar/gradlew'
-    sh 'cd ./uberjar && ./gradlew clean publish -PreleaseType=OFFICIAL'
 }
