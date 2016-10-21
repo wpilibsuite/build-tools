@@ -3,8 +3,8 @@
 
 // We expect the version of ntcore and wpiutil be somewhere in the products directory
 def finder = new FileNameFinder()
-def utilVersion = file(finder.getFileNames(new File(projectDir, 'products'), '**/wpiutil.txt').first()).text.trim()
-def ntcoreVersion = file(finder.getFileNames(new File(projectDir, 'products'), '**/ntcore.txt').first()).text.trim()
+def utilVersion = file(finder.getFileNames(new File(projectDir, 'products').absolutePath, '**/wpiutil.txt').first()).text.trim()
+def ntcoreVersion = file(finder.getFileNames(new File(projectDir, 'products').absolutePath, '**/ntcore.txt').first()).text.trim()
 
 apply plugin: ProductCombinerPlugin
 
