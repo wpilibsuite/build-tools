@@ -70,8 +70,10 @@ def setupBuildSteps(job, usePublish, properties = null) {
     job.with {
         steps {
             gradle {
+                rootBuildScriptDir('smartdashboard')
                 tasks('clean')
-                tasks(usePublish ? 'publish' : 'build')
+                tasks('build')
+                if (usePublish) tasks('publish')
                 if (properties != null) {
                     properties.each { prop ->
                         switches("-P$prop")
