@@ -31,7 +31,7 @@ def developmentJob = job("$basePath/RobotBuilder - Development") {
         scm('H/15 * * * *')
     }
     publishers {
-        downstream('Eclipse Plugins - Development')
+        downstream('Eclipse Plugins/Eclipse Plugins - Development')
     }
 }
 
