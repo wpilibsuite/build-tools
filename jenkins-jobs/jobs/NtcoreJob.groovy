@@ -13,7 +13,7 @@ folder(basePath)
         }
     }
     setupProperties(prJob)
-    setupPrJob(prJob)
+    setupPrJob(prJob, platform)
 }
 
 def armPrJob = job("$basePath/ntcore ARM - PR") {
@@ -26,7 +26,7 @@ def armPrJob = job("$basePath/ntcore ARM - PR") {
     }
 }
 setupProperties(armPrJob)
-setupPrJob(armPrJob)
+setupPrJob(armPrJob, 'ARM')
 
 def developmentJob = pipelineJob("$basePath/ntcore - Development") {
     definition {
@@ -70,7 +70,7 @@ def setupProperties(job) {
     }
 }
 
-def setupPrJob(job) {
+def setupPrJob(job, name) {
     job.with {
         scm {
             git {
@@ -86,6 +86,11 @@ def setupPrJob(job) {
                 admins(['333fred', 'PeterJohnson', 'bradamiller', 'Kevin-OConnor'])
                 orgWhitelist('wpilibsuite')
                 useGitHubHooks()
+                extensions {
+                    commitStatus {
+                        context("frcjenkins - $name")
+                    }
+                }
             }
         }
     }
