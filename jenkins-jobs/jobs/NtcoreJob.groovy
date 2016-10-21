@@ -21,6 +21,7 @@ def developmentJob = pipelineJob("$basePath/ntcore - Development") {
             } catch (Exception e) {
                 script(readFileFromWorkspace('pipeline-scripts/ntcore-development.groovy'))
             }
+            sandbox()
         }
     }
     triggers {
@@ -43,6 +44,7 @@ def releaseJob = pipelineJob("$basePath/ntcore - Release") {
             } catch (Exception e) {
                 script(readFileFromWorkspace('pipeline-scripts/ntcore-release.groovy'))
             }
+            sandbox()
         }
     }
 }
