@@ -30,7 +30,7 @@ def developmentJob = job("$basePath/WPILib - Development") {
         scm('H/15 * * * *')
     }
     publishers {
-        downstream('Eclipse Plugins/Eclipse Plugins - Development')
+        downstream('Eclipse Plugins/Eclipse Plugins - Development', 'UNSTABLE')
     }
 }
 
