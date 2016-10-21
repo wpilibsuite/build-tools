@@ -29,6 +29,9 @@ def developmentJob = job("$basePath/SmartDashboard - Development") {
     triggers {
         scm('H/15 * * * *')
     }
+    publishers {
+        downstream('Eclipse Plugins/Eclipse Plugins - Development')
+    }
 }
 
 setupGit(developmentJob)
