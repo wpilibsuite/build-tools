@@ -29,6 +29,9 @@ def developmentJob = job("$basePath/OutlineViewer - Development") {
     triggers {
         scm('H/15 * * * *')
     }
+    publishers {
+        downstream('Eclipse Plugins/Eclipse Plugins - Development')
+    }
 }
 
 setupGit(developmentJob)
