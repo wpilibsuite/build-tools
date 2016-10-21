@@ -48,3 +48,10 @@ node {
         sh 'cd ./uberjar && ./gradlew clean publish'
     }
 }
+
+stage 'downstream'
+node {
+    build job: 'OutlineViewer/OutlineViewer - Development'
+    build job: 'SmartDashboard/SmartDashboard - Development'
+    build job: 'WPILib/WPILib - Development'
+}
