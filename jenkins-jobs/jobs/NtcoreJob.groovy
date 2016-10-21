@@ -26,6 +26,11 @@ def developmentJob = pipelineJob("$basePath/ntcore - Development") {
     triggers {
         scm('H/15 * * * *')
     }
+    publishers {
+        downstream('WPILib/WPILib - Development')
+        downstream('OutlineViewer/OutlineViewer - Development')
+        downstream('SmartDashboard/SmartDashboard - Development')
+    }
 }
 
 setupProperties(developmentJob)
