@@ -36,7 +36,7 @@ parallel builds
 stage 'combine'
 node {
     ws("workspace/${env.JOB_NAME}/combine") {
-        git 'https://github.com/333fred/build-tools.git'
+        git 'https://github.com/wpilibsuite/build-tools.git'
         sh 'git clean -xfd'
         dir('uberjar/products') {
             unstash 'linux'
