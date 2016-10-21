@@ -1,13 +1,18 @@
 // The various tasks that jenkins needs to do are split up by project, with each in their own
 // gradle file.
 
+// We expect the version of ntcore and wpiutil be somewhere in the products directory
+def finder = new FileNameFinder()
+def utilVersion = file(finder.getFileNames(new File(projectDir, 'products'), '**/wpiutil.txt').first()).text.trim()
+def ntcoreVersion = file(finder.getFileNames(new File(projectDir, 'products'), '**/ntcore.txt').first()).text.trim()
+
 apply plugin: ProductCombinerPlugin
 
 products {
     ntcoreJava {
         group = 'edu.wpi.first.wpilib.networktables.java'
         productName = 'NetworkTables'
-        versionNum = '3.0.0-SNAPSHOT'
+        versionNum = ntcoreVersion
         fileNameInclude = 'ntcore'
         excludes = ['**/*javadoc*', '**/*sources*', '**/*arm*']
         armInclude = '**/ntcore-arm*.jar'
@@ -19,7 +24,7 @@ products {
     ntcoreCpp {
         group = 'edu.wpi.first.wpilib.networktables.cpp'
         productName = 'NetworkTables'
-        versionNum = '3.0.0-SNAPSHOT'
+        versionNum = ntcoreVersion
         fileNameInclude = 'ntcore'
         excludes = ['**/*javadoc*', '**/*sources*', '**/*arm*']
         armInclude = '**/ntcore-arm*.zip'
@@ -30,7 +35,7 @@ products {
     wpiutil {
         group = 'edu.wpi.first.wpilib'
         productName = 'wpiutil'
-        versionNum = '1.0.0-SNAPSHOT'
+        versionNum = utilVersion
         fileNameInclude = 'wpiutil'
         excludes = ['**/*javadoc*', '**/*sources*', '**/*arm*']
         armInclude = '**/wpiutil-arm*.zip'
