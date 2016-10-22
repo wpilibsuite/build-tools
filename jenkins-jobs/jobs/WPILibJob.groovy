@@ -5,7 +5,7 @@ def prJob = job("$basePath/WPILib - PR") {
     scm {
         git {
             remote {
-                url('https://github.com/333fred/allwpilib.git')
+                url('https://github.com/wpilibsuite/allwpilib.git')
                 refspec('+refs/pull/*:refs/remotes/origin/pr/*')
             }
             // This is purposefully not a GString. This is a jenkins environment
@@ -49,8 +49,8 @@ def setupGit(job) {
         scm {
             git {
                 remote {
-                    url('https://github.com/333fred/allwpilib.git')
-                    branch('*/gradle-version-generation')
+                    url('https://github.com/wpilibsuite/allwpilib.git')
+                    branch('*/master')
                 }
             }
         }
@@ -61,7 +61,7 @@ def setupProperties(job) {
     job.with {
         // Note: the pull request builder plugin will fail without this property set.
         properties {
-            githubProjectUrl('https://github.com/333fred/allwpilib')
+            githubProjectUrl('https://github.com/wpilibsuite/allwpilib')
         }
     }
 }
