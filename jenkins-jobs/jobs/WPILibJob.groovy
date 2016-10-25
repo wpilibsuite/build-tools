@@ -83,7 +83,7 @@ def setupBuildSteps(job, usePublish, properties = null, test = true) {
     }
 }
 
-def setupPrJob(job, context) {
+def setupPrJob(job, prContext) {
     job.with {
         scm {
             git {
@@ -103,7 +103,7 @@ def setupPrJob(job, context) {
                 useGitHubHooks()
                 extensions {
                     commitStatus {
-                        context("frcjenkins - $context")
+                        context("frcjenkins - $prContext")
                     }
                 }
             }
