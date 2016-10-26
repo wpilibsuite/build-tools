@@ -9,7 +9,7 @@ setupBuildSteps(athenaPrJob, false)
 def simPrJob = job("$basePath/WPILib - PR Sim")
 setupPrJob(simPrJob, 'Sim')
 setupProperties(simPrJob)
-setupBuildSteps(simPrJob, false, ['makeSim'], false)
+setupSimBuildSteps(simPrJob)
 
 def developmentJob = job("$basePath/WPILib - Development") {
     triggers {
@@ -52,7 +52,7 @@ def setupProperties(job) {
     }
 }
 
-def setupBuildSteps(job, usePublish, properties = null, test = true) {
+def setupBuildSteps(job, usePublish, properties = null) {
     job.with {
         steps {
             gradle {
@@ -64,8 +64,7 @@ def setupBuildSteps(job, usePublish, properties = null, test = true) {
                     }
                 }
             }
-            if (test)
-                shell('cd test-scripts && chmod +x *.sh && ./jenkins-run-tests-get-results.sh')
+            shell('cd test-scripts && chmod +x *.sh && ./jenkins-run-tests-get-results.sh')
             if (usePublish) {
                 gradle {
                     tasks('publish')
@@ -79,6 +78,19 @@ def setupBuildSteps(job, usePublish, properties = null, test = true) {
         }
         publishers {
             archiveJunit('test-reports/*.xml')
+        }
+    }
+}
+
+def setupSimBuildSteps(job) {
+    job.with {
+        steps {
+            gradle {
+                tasks('clean')
+                tasks('wpilibjSimJar')
+                tasks('allcsim')
+                switches('-PmakeSim')
+            }
         }
     }
 }
