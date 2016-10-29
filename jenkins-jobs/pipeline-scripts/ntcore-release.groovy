@@ -50,7 +50,7 @@ stage('combine') {
                 unstash 'arm'
             }
             sh 'chmod +x ./uberjar/gradlew'
-            sh 'cd ./uberjar && ./gradlew clean publish -PreleaseType=OFFICIAL'
+            sh 'cd ./uberjar && ./gradlew clean publish -Prepo=release'
         }
     }
 }
