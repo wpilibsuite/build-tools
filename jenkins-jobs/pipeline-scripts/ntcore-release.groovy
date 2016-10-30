@@ -4,7 +4,7 @@ stage('build') {
         node('linux') {
             git poll: true, url:'https://github.com/wpilibsuite/ntcore.git'
             sh './gradlew clean :native:ntcore:build :native:wpiutil:build ntcoreSourceZip wpiutilSourceZip ' +
-                    '-PreleaseType=OFFICIAL'
+                    '-PreleaseType=OFFICIAL -PjenkinsBuild'
             stash includes: 'native/*/build/libs/**/*.jar, native/*/build/**/*.zip, build/*.zip, build/*.txt', name: 'linux'
         }
     }
@@ -12,7 +12,7 @@ stage('build') {
         node('mac') {
             git poll: true, url: 'https://github.com/wpilibsuite/ntcore.git'
             sh './gradlew clean :native:ntcore:build :native:wpiutil:build ntcoreSourceZip wpiutilSourceZip ' +
-                    '-PreleaseType=OFFICIAL'
+                    '-PreleaseType=OFFICIAL -PjenkinsBuild'
             stash includes: 'native/*/build/libs/**/*.jar, native/*/build/**/*.zip, build/*.zip, build/*.txt', name: 'mac'
         }
     }
@@ -20,7 +20,7 @@ stage('build') {
         node('windows') {
             git poll: true, url: 'https://github.com/wpilibsuite/ntcore.git'
             bat '.\\gradlew.bat clean :native:ntcore:build :native:wpiutil:build ntcoreSourceZip wpiutilSourceZip ' +
-                    '-PreleaseType=OFFICIAL'
+                    '-PreleaseType=OFFICIAL -PjenkinsBuild'
             stash includes: 'native/*/build/libs/**/*.jar, native/*/build/**/*.zip, build/*.zip, build/*.txt', name: 'windows'
         }
     }
@@ -28,7 +28,7 @@ stage('build') {
         node {
             ws("workspace/${env.JOB_NAME}/arm") {
                 git poll: true, url: 'https://github.com/wpilibsuite/ntcore.git'
-                sh './gradlew clean :arm:wpiutil:build :arm:ntcore:build -PreleaseType=OFFICIAL'
+                sh './gradlew clean :arm:wpiutil:build :arm:ntcore:build -PreleaseType=OFFICIAL -PjenkinsBuild'
                 stash includes: 'arm/*/build/libs/**/*.jar, arm/ntcore/build/ntcore-arm.zip, ' +
                         'arm/wpiutil/build/wpiutil-arm.zip', name: 'arm'
             }

@@ -62,6 +62,7 @@ def setupBuildSteps(job, properties = null) {
                 tasks('clean')
                 tasks('updateDependencies')
                 tasks('build')
+                switches('-PjenkinsBuild')
                 if (properties != null) {
                     properties.each { prop ->
                         switches("-P$prop")

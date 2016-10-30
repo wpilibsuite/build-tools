@@ -75,6 +75,7 @@ def setupBuildSteps(job, usePublish, properties = null) {
             gradle {
                 tasks('clean')
                 tasks(usePublish ? 'publish' : 'build')
+                switches('-PjenkinsBuild')
                 if (properties != null) {
                     properties.each { prop ->
                         switches("-P$prop")

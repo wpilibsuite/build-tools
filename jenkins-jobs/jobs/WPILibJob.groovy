@@ -58,6 +58,7 @@ def setupBuildSteps(job, usePublish, properties = null) {
             gradle {
                 tasks('clean')
                 tasks('build')
+                switches('-PjenkinsBuild')
                 if (properties != null) {
                     properties.each { prop ->
                         switches("-P$prop")
@@ -68,6 +69,7 @@ def setupBuildSteps(job, usePublish, properties = null) {
             if (usePublish) {
                 gradle {
                     tasks('publish')
+                    switches('-PjenkinsBuild')
                     if (properties != null) {
                         properties.each { prop ->
                             switches("-P$prop")
@@ -89,6 +91,7 @@ def setupSimBuildSteps(job) {
                 tasks('clean')
                 tasks('wpilibjSimJar')
                 tasks('allcsim')
+                switches('-PjenkinsBuild')
                 switches('-PmakeSim')
             }
         }

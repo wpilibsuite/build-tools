@@ -9,6 +9,7 @@ folder(basePath)
                 tasks('clean')
                 tasks(':native:wpiutil:build')
                 tasks(':native:ntcore:build')
+                switches('-PjenkinsBuild')
             }
         }
     }
@@ -22,6 +23,7 @@ def armPrJob = job("$basePath/ntcore ARM - PR") {
             tasks('clean')
             tasks(':arm:wpiutil:build')
             tasks(':arm:ntcore:build')
+            switches('-PjenkinsBuild')
         }
     }
 }

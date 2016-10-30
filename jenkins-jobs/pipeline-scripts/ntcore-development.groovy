@@ -3,21 +3,21 @@ stage('build') {
     builds['linux'] = {
         node('linux') {
             git poll: true, url: 'https://github.com/wpilibsuite/ntcore.git'
-            sh './gradlew clean :native:ntcore:build :native:wpiutil:build ntcoreSourceZip wpiutilSourceZip'
+            sh './gradlew clean :native:ntcore:build :native:wpiutil:build ntcoreSourceZip wpiutilSourceZip -PjenkinsBuild'
             stash includes: 'native/*/build/libs/**/*.jar, native/*/build/**/*.zip, build/*.zip, build/*.txt', name: 'linux'
         }
     }
     builds['mac'] = {
         node('mac') {
             git poll: true, url: 'https://github.com/wpilibsuite/ntcore.git'
-            sh './gradlew clean :native:ntcore:build :native:wpiutil:build ntcoreSourceZip wpiutilSourceZip'
+            sh './gradlew clean :native:ntcore:build :native:wpiutil:build ntcoreSourceZip wpiutilSourceZip -PjenkinsBuild'
             stash includes: 'native/*/build/libs/**/*.jar, native/*/build/**/*.zip, build/*.zip, build/*.txt', name: 'mac'
         }
     }
     builds['windows'] = {
         node('windows') {
             git poll: true, url: 'https://github.com/wpilibsuite/ntcore.git'
-            bat '.\\gradlew.bat clean :native:ntcore:build :native:wpiutil:build ntcoreSourceZip wpiutilSourceZip'
+            bat '.\\gradlew.bat clean :native:ntcore:build :native:wpiutil:build ntcoreSourceZip wpiutilSourceZip -PjenkinsBuild'
             stash includes: 'native/*/build/libs/**/*.jar, native/*/build/**/*.zip, build/*.zip, build/*.txt', name: 'windows'
         }
     }
@@ -25,7 +25,7 @@ stage('build') {
         node {
             ws("workspace/${env.JOB_NAME}/arm") {
                 git poll: true, url: 'https://github.com/wpilibsuite/ntcore.git'
-                sh './gradlew clean :arm:wpiutil:build :arm:ntcore:build'
+                sh './gradlew clean :arm:wpiutil:build :arm:ntcore:build -PjenkinsBuild'
                 stash includes: 'arm/*/build/libs/**/*.jar, arm/ntcore/build/ntcore-arm.zip, arm/wpiutil/build/wpiutil-arm.zip', name: 'arm'
             }
         }
