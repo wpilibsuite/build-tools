@@ -71,7 +71,6 @@ def setupBuildSteps(job, usePublish, properties = null) {
     job.with {
         steps {
             gradle {
-                rootBuildScriptDir('smartdashboard')
                 tasks('clean')
                 tasks('build')
                 if (usePublish) tasks('publish')
