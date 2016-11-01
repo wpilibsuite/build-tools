@@ -55,6 +55,7 @@ stage('downstream') {
     node {
         build job: 'OutlineViewer/OutlineViewer - Development', wait: false
         build job: 'SmartDashboard/SmartDashboard - Development', wait: false
+        build job: 'Cameraserver/Cameraserver - Development', wait: false
         build job: 'WPILib/WPILib - Development', wait: false
     }
 }
