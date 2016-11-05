@@ -81,5 +81,12 @@ def setupBuildSteps(job, usePublish, properties = null) {
                 }
             }
         }
+        if (usePublish) {
+            publishers {
+                archiveArtifacts {
+                    pattern('build/libs/Java Installer*.jar')
+                }
+            }
+        }
     }
 }

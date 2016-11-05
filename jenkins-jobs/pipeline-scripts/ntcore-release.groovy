@@ -51,6 +51,7 @@ stage('combine') {
             }
             sh 'chmod +x ./uberjar/gradlew'
             sh 'cd ./uberjar && ./gradlew clean publish -Prepo=release'
+            archiveArtifacts 'uberjar/build/*.zip, uberjar/build/*.jar'
         }
     }
 }

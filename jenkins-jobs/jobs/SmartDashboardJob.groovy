@@ -82,5 +82,12 @@ def setupBuildSteps(job, usePublish, properties = null) {
                 }
             }
         }
+        if (usePublish) {
+            publishers {
+                archiveArtifacts {
+                    pattern('smartdashboard/build/libs/smartdashboard-all.jar')
+                }
+            }
+        }
     }
 }

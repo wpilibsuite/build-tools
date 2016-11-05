@@ -80,6 +80,12 @@ def setupBuildSteps(job, usePublish, properties = null) {
         }
         publishers {
             archiveJunit('test-reports/*.xml')
+            if (usePublish) {
+                archiveArtifacts {
+                    pattern('**/build/**/*.zip')
+                    pattern('**/build/**/*.jar')
+                }
+            }
         }
     }
 }
