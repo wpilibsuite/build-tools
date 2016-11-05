@@ -83,6 +83,9 @@ def setupPublish(job, location) {
                             "cp -r ./edu.wpi.first.wpilib.plugins.updatesite/target/site/* $location")
                 }
             }
+            archiveArtifacts {
+                pattern('edu.wpi.first.wpilib.plugins.updatesite/target/site/**/*')
+            }
         }
     }
 }

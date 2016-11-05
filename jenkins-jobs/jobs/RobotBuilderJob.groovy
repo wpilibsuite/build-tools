@@ -74,12 +74,20 @@ def setupBuildSteps(job, usePublish, properties = null) {
         steps {
             gradle {
                 tasks('clean')
-                tasks(usePublish ? 'publish' : 'build')
+                tasks('build')
+                if (usePublish) tasks('publish')
                 switches('-PjenkinsBuild')
                 if (properties != null) {
                     properties.each { prop ->
                         switches("-P$prop")
                     }
+                }
+            }
+        }
+        if (usePublish) {
+            publishers {
+                archiveArtifacts {
+                    pattern('build/libs/RobotBuilder*.jar')
                 }
             }
         }

@@ -82,5 +82,15 @@ def setupBuildSteps(job, usePublish, properties = null) {
                 }
             }
         }
+        if (usePublish) {
+            publishers {
+                archiveArtifacts {
+                    pattern('**/build/cameraserver*.zip')
+                    pattern('**/build/libs/cameraserver*.zip')
+                    onlyIfSuccessful()
+                }
+            }
+        }
     }
 }
+
