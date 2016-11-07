@@ -1,11 +1,11 @@
-def basePath = 'Cameraserver'
+def basePath = 'CSCore'
 folder(basePath)
 
-def prJob = job("$basePath/Cameraserver - PR") {
+def prJob = job("$basePath/CSCore - PR") {
     scm {
         git {
             remote {
-                url('https://github.com/wpilibsuite/cameraserver.git')
+                url('https://github.com/wpilibsuite/cscore.git')
                 refspec('+refs/pull/*:refs/remotes/origin/pr/*')
             }
             // This is purposefully not a GString. This is a jenkins environment
@@ -25,7 +25,7 @@ def prJob = job("$basePath/Cameraserver - PR") {
 setupProperties(prJob)
 setupBuildSteps(prJob, false)
 
-def developmentJob = job("$basePath/Cameraserver - Development") {
+def developmentJob = job("$basePath/CSCore - Development") {
     triggers {
         scm('H/15 * * * *')
     }
@@ -39,7 +39,7 @@ setupGit(developmentJob)
 setupProperties(developmentJob)
 setupBuildSteps(developmentJob, true)
 
-def releaseJob = job("$basePath/Cameraserver - Release")
+def releaseJob = job("$basePath/CSCore - Release")
 
 setupGit(releaseJob)
 setupProperties(releaseJob)
@@ -50,7 +50,7 @@ def setupGit(job) {
         scm {
             git {
                 remote {
-                    url('https://github.com/wpilibsuite/cameraserver.git')
+                    url('https://github.com/wpilibsuite/cscore.git')
                     branch('*/master')
                 }
             }
@@ -62,7 +62,7 @@ def setupProperties(job) {
     job.with {
         // Note: The pull request builder plugin will fail without this property set.
         properties {
-            githubProjectUrl('https://github.com/wpilibsuite/cameraserver')
+            githubProjectUrl('https://github.com/wpilibsuite/cscore')
         }
     }
 }
@@ -85,8 +85,8 @@ def setupBuildSteps(job, usePublish, properties = null) {
         if (usePublish) {
             publishers {
                 archiveArtifacts {
-                    pattern('**/build/cameraserver*.zip')
-                    pattern('**/build/libs/cameraserver*.zip')
+                    pattern('**/build/cscore*.zip')
+                    pattern('**/build/libs/cscore*.zip')
                     onlyIfSuccessful()
                 }
             }
