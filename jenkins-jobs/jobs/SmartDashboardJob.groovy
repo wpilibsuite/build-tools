@@ -70,7 +70,6 @@ def setupBuildSteps(job, usePublish, properties = null) {
     job.with {
         steps {
             gradle {
-                rootBuildScriptDir('smartdashboard')
                 tasks('clean')
                 tasks('build')
                 if (usePublish) tasks('publish')
@@ -85,7 +84,7 @@ def setupBuildSteps(job, usePublish, properties = null) {
         if (usePublish) {
             publishers {
                 archiveArtifacts {
-                    pattern('smartdashboard/build/libs/smartdashboard-all.jar')
+                    pattern('build/libs/SmartDashboard-all.jar')
                 }
             }
         }
