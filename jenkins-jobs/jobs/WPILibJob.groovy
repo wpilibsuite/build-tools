@@ -77,8 +77,6 @@ def setupBuildSteps(job, usePublish, properties = null) {
                     }
                 }
             }
-            shell('rm -rf ~/releases/docs/cpp/ && mkdir -p ~/releases/docs/cpp/ && cp -r ./wpilibc/build/docs/html/* ~/releases/docs/cpp/')
-            shell('rm -rf ~/releases/docs/java/ && mkdir -p ~/releases/docs/java/ && cp -r ./wpilibj/build/docs/javadoc/* ~/releases/docs/java/')
         }
         publishers {
             archiveJunit('test-reports/*.xml')
