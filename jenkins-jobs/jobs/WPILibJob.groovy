@@ -22,13 +22,13 @@ def developmentJob = job("$basePath/WPILib - Development") {
 
 setupProperties(developmentJob)
 setupGit(developmentJob)
-setupBuildSteps(developmentJob, true, ['makeSim'])
+setupBuildSteps(developmentJob, true, ['makeSim'], 'development')
 
 def releaseJob = job("$basePath/WPILib - Release")
 
 setupProperties(releaseJob)
 setupGit(releaseJob)
-setupBuildSteps(releaseJob, true, ['releaseType=OFFICIAL', 'makeSim'])
+setupBuildSteps(releaseJob, true, ['releaseType=OFFICIAL', 'makeSim'], 'release')
 
 def setupGit(job) {
     job.with {
@@ -52,7 +52,7 @@ def setupProperties(job) {
     }
 }
 
-def setupBuildSteps(job, usePublish, properties = null) {
+def setupBuildSteps(job, usePublish, properties = null, jobName = null) {
     job.with {
         steps {
             gradle {
@@ -76,6 +76,9 @@ def setupBuildSteps(job, usePublish, properties = null) {
                         }
                     }
                 }
+                def docsRoot = "~/releases/$jobName/docs"
+                shell("rm -rf ~/$docsRoot/cpp/ && mkdir -p ~/$docsRoot/cpp/ && cp -r ./wpilibc/build/docs/html/* ~/$docsRoot/cpp/")
+                shell("rm -rf ~/$docsRoot/java/ && mkdir -p ~/$docsRoot/java/ && cp -r ./wpilibj/build/docs/javadoc/* ~/$docsRoot/java/")
             }
         }
         publishers {
