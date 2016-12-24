@@ -85,7 +85,7 @@ def setupBuildSteps(job, usePublish, properties = null) {
             publishers {
                 archiveArtifacts {
                     pattern('**/build/cscore*.zip')
-                    pattern('**/build/libs/cscore*.zip')
+                    pattern('**/build/libs/cscore*.jar')
                     onlyIfSuccessful()
                 }
             }
