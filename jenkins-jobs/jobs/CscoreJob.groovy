@@ -29,10 +29,9 @@ def developmentJob = job("$basePath/CSCore - Development") {
     triggers {
         scm('H/15 * * * *')
     }
-    // TODO: https://github.com/wpilibsuite/build-tools/issues/25
-//    publishers {
-//        downstream('Eclipse Plugins/Eclipse Plugins - Development')
-//    }
+    publishers {
+        downstream('Eclipse Plugins/Eclipse Plugins - Development')
+    }
 }
 
 setupGit(developmentJob)
