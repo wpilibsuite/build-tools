@@ -6,9 +6,9 @@ folder(basePath)
         definition {
             cps {
                 try {
-                    script(readFileFromWorkspace('jenkins-jobs/pipeline-scripts/uberbuild.groovy').replaceAll('BUILD_TYPE', buildType).replaceAll('LOWER_BUILD_TYPE', buildType.toLowerCase()))
+                    script(readFileFromWorkspace('jenkins-jobs/pipeline-scripts/uberbuild.groovy').replaceAll('LOWER_BUILD_TYPE', buildType.toLowerCase()).replaceAll('BUILD_TYPE', buildType))
                 } catch (Exception e) {
-                    script(readFileFromWorkspace('pipeline-scripts/uberbuild.groovy').replaceAll('BUILD_TYPE', buildType).replaceAll('LOWER_BUILD_TYPE', buildType.toLowerCase()))
+                    script(readFileFromWorkspace('pipeline-scripts/uberbuild.groovy').replaceAll('LOWER_BUILD_TYPE', buildType.toLowerCase()).replaceAll('BUILD_TYPE', buildType))
                 }
                 sandbox()
             }
