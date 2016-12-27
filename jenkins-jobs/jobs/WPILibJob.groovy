@@ -50,7 +50,7 @@ def setupProperties(job) {
             githubProjectUrl('https://github.com/wpilibsuite/allwpilib')
         }
         parameters {
-            stringParam('docsLocation', '~/releases/development/docs/')
+            stringParam('docsLocation', "${System.getProperty('user.home')}/releases/development/docs/")
         }
     }
 }
@@ -80,7 +80,7 @@ def setupBuildSteps(job, usePublish, properties = null, jobName = null) {
                     }
                 }
                 shell('rm -rf $docsLocation/cpp/ && mkdir -p $docsLocation/cpp/ && cp -r ./wpilibc/build/docs/html/* $docsLocation/cpp/')
-                shell('rm -rf $docsRoot/java/ && mkdir -p $docsRoot/java/ && cp -r ./wpilibj/build/docs/javadoc/* $docsLocation/java/')
+                shell('rm -rf $docsLocation/java/ && mkdir -p $docsLocation/java/ && cp -r ./wpilibj/build/docs/javadoc/* $docsLocation/java/')
             }
         }
         publishers {
