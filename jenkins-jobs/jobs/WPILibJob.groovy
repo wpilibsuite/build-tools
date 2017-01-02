@@ -30,6 +30,13 @@ setupProperties(releaseJob)
 setupGit(releaseJob)
 setupBuildSteps(releaseJob, true, ['releaseType=OFFICIAL', 'makeSim'], 'release')
 
+// Allow anyone to release the mutex by running a job
+job("$basePath/Release Mutex") {
+    steps {
+        shell('ssh -t admin@roborio-190-frc.local /usr/local/frc/bin/teststand give --name=`whoami`')
+    }
+}
+
 def setupGit(job) {
     job.with {
         scm {
