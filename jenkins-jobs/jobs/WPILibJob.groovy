@@ -31,11 +31,39 @@ setupGit(releaseJob)
 setupBuildSteps(releaseJob, true, ['releaseType=OFFICIAL', 'makeSim'], 'release')
 
 // Allow anyone to release the mutex by running a job
-job("$basePath/Release Mutex") {
+def mutexJob = job("$basePath/Release Mutex") {
     steps {
         shell('ssh -t admin@roborio-190-frc.local /usr/local/frc/bin/teststand give --name=`whoami`')
     }
+
+    scm {
+        git {
+            remote {
+                url('https://github.com/wpilibsuite/allwpilib.git')
+                refspec('+refs/pull/*:refs/remotes/origin/pr/*')
+            }
+            // This is purposefully not a GString. This is a jenkins environment
+            // variable, not a groovy variable
+            branch('${sha1}')
+        }
+    }
+    triggers {
+        githubPullRequest {
+            orgWhitelist('wpilibsuite')
+            useGitHubHooks()
+            allowMembersOfWhitelistedOrgsAsAdmin()
+            onlyTriggerPhrase()
+            triggerPhrase('.*release\\wthe\\wmutex.*')
+            extensions {
+                commitStatus {
+                    context("frcjenkins - Mutex Release")
+                }
+            }
+        }
+    }
 }
+
+setupProperties(mutexJob, false)
 
 def setupGit(job) {
     job.with {
@@ -50,14 +78,16 @@ def setupGit(job) {
     }
 }
 
-def setupProperties(job) {
+def setupProperties(job, withParams = true) {
     job.with {
         // Note: the pull request builder plugin will fail without this property set.
         properties {
             githubProjectUrl('https://github.com/wpilibsuite/allwpilib')
         }
-        parameters {
-            stringParam('docsLocation', "${System.getProperty('user.home')}/releases/development/docs/")
+        if (withParams) {
+            parameters {
+                stringParam('docsLocation', "${System.getProperty('user.home')}/releases/development/docs/")
+            }
         }
     }
 }
