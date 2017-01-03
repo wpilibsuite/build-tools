@@ -53,7 +53,7 @@ def mutexJob = job("$basePath/Release Mutex") {
             useGitHubHooks()
             allowMembersOfWhitelistedOrgsAsAdmin()
             onlyTriggerPhrase()
-            triggerPhrase('.*release\\wthe\\wmutex.*')
+            triggerPhrase('(?i).*release\\Wthe\\Wmutex.*')
             extensions {
                 commitStatus {
                     context("frcjenkins - Mutex Release")
