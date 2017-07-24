@@ -20,7 +20,7 @@ stage('build') {
         node('windows') {
             git poll: true, url: 'https://github.com/wpilibsuite/ntcore.git'
             bat '.\\gradlew.bat clean :native:ntcore:build :native:wpiutil:build ntcoreSourceZip wpiutilSourceZip ' +
-                    '-PreleaseType=OFFICIAL -PjenkinsBuild'
+                    '-PreleaseType=OFFICIAL -PjenkinsBuild -PwithoutTests'
             stash includes: 'native/*/build/libs/**/*.jar, native/*/build/**/*.zip, build/*.zip, build/*.txt', name: 'windows'
         }
     }

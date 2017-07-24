@@ -1,7 +1,7 @@
 def basePath = 'ntcore'
 folder(basePath)
 
-['Windows', 'Mac', 'Linux'].each { platform ->
+['Mac', 'Linux'].each { platform ->
     def prJob = job("$basePath/ntcore $platform - PR") {
         label(platform.toLowerCase())
         steps {
@@ -10,6 +10,22 @@ folder(basePath)
                 tasks(':native:wpiutil:build')
                 tasks(':native:ntcore:build')
                 switches('-PjenkinsBuild')
+            }
+        }
+    }
+    setupProperties(prJob)
+    setupPrJob(prJob, platform)
+}
+
+['Windows'].each { platform ->
+    def prJob = job("$basePath/ntcore $platform - PR") {
+        label(platform.toLowerCase())
+        steps {
+            gradle {
+                tasks('clean')
+                tasks(':native:wpiutil:build')
+                tasks(':native:ntcore:build')
+                switches('-PjenkinsBuild -PwithoutTests')
             }
         }
     }
