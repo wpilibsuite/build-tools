@@ -25,7 +25,7 @@ stage('build') {
         node {
             ws("workspace/${env.JOB_NAME}/arm") {
                 git poll: true, url: 'https://github.com/thadhouse/wpiutil-test.git'
-                sh './gradlew clean build -PjenkinsBuild -onlyAthena -PreleaseBuild'
+                sh './gradlew clean build -PjenkinsBuild -PonlyAthena -PreleaseBuild'
                 stash includes: 'build/libs/**/*.jar, build/outputs/**/*.*', name: 'arm'
             }
         }
