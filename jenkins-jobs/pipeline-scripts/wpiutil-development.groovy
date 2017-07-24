@@ -47,7 +47,8 @@ stage('combine') {
             }
             sh 'chmod +x ./gradlew'
             sh './gradlew publish -Pwpiutil'
-            archiveArtifacts 'products/*.zip, product/*.jar'
+            sh 'ls products/'
+            //archiveArtifacts 'products/*.zip, product/*.jar'
         }
     }
 }
