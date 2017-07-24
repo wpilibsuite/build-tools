@@ -46,7 +46,7 @@ stage('combine') {
                 unstash 'arm'
             }
             sh 'chmod +x ./gradlew'
-            sh './gradlew clean publish -Pwpiutil -Prepo=release'
+            sh './gradlew publish -Pwpiutil -Prepo=release'
             archiveArtifacts 'products/*.zip, product/*.jar'
         }
     }
