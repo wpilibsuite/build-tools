@@ -3,21 +3,21 @@ stage('build') {
     builds['linux'] = {
         node('linux') {
             git poll: true, url: 'https://github.com/thadhouse/wpiutil-test.git'
-            sh './gradlew clean build -PjenkinsBuild -PskipAthena -PreleaseBuild'
+            sh './gradlew clean build -PjenkinsBuild -PskipAthena -PreleaseBuild -PbuildAll --console=plain --stacktrace'
             stash includes: 'build/libs/**/*.jar, build/outputs/**/*.*', name: 'linux'
         }
     }
     builds['mac'] = {
         node('mac') {
             git poll: true, url: 'https://github.com/thadhouse/wpiutil-test.git'
-            sh './gradlew clean build -PjenkinsBuild -PskipAthena -PreleaseBuild'
+            sh './gradlew clean build -PjenkinsBuild -PskipAthena -PreleaseBuild -PbuildAll --console=plain --stacktrace'
             stash includes: 'build/libs/**/*.jar, build/outputs/**/*.*', name: 'mac'
         }
     }
     builds['windows'] = {
         node('windows') {
             git poll: true, url: 'https://github.com/thadhouse/wpiutil-test.git'
-            bat '.\\gradlew.bat  clean build -PjenkinsBuild -PskipAthena -PreleaseBuild'
+            bat '.\\gradlew.bat  clean build -PjenkinsBuild -PskipAthena -PreleaseBuild -PbuildAll --console=plain --stacktrace'
             stash includes: 'build/libs/**/*.jar, build/outputs/**/*.*', name: 'windows'
         }
     }
@@ -25,7 +25,7 @@ stage('build') {
         node {
             ws("workspace/${env.JOB_NAME}/arm") {
                 git poll: true, url: 'https://github.com/thadhouse/wpiutil-test.git'
-                sh './gradlew clean build -PjenkinsBuild -PonlyAthena -PreleaseBuild'
+                sh './gradlew clean build -PjenkinsBuild -PonlyAthena -PreleaseBuild -PbuildAll --console=plain --stacktrace'
                 stash includes: 'build/libs/**/*.jar, build/outputs/**/*.*', name: 'arm'
             }
         }
@@ -47,8 +47,8 @@ stage('combine') {
             }
             sh 'chmod +x ./gradlew'
             sh './gradlew publish -Pwpiutil'
-            sh 'ls products/'
-            //archiveArtifacts 'products/*.zip, product/*.jar'
+            //sh 'ls products/'
+            archiveArtifacts 'products/**/*.zip, product/**/*.jar'
         }
     }
 }

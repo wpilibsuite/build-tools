@@ -8,7 +8,7 @@ folder(basePath)
             gradle {
                 tasks('clean')
                 tasks('build')
-                switches('-PjenkinsBuild -PskipAthena -PreleaseBuild --console=plain')
+                switches('-PjenkinsBuild -PskipAthena -PreleaseBuild -PbuildAll --console=plain --stacktrace')
             }
         }
     }
@@ -21,7 +21,7 @@ def armPrJob = job("$basePath/wpiutil ARM - PR") {
         gradle {
             tasks('clean')
             tasks('build')
-            switches('-PjenkinsBuild -PonlyAthena -PreleaseBuild --console=plain')
+            switches('-PjenkinsBuild -PonlyAthena -PreleaseBuild -PbuildAll --console=plain --stacktrace')
         }
     }
 }
