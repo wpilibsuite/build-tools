@@ -65,7 +65,7 @@ def setupProperties(job) {
     job.with {
         // Note: the pull request builder plugin will fail without this property set.
         properties {
-            githubProjectUrl('https://github.com/thadhouse/wpiutil-test')
+            githubProjectUrl('https://github.com/wpilibsuite/wpiutil')
         }
     }
 }
@@ -75,7 +75,7 @@ def setupPrJob(job, name) {
         scm {
             git {
                 remote {
-                    url('https://github.com/thadhouse/wpiutil-test.git')
+                    url('https://github.com/wpilibsuite/wpiutil.git')
                     refspec('+refs/pull/*:refs/remotes/origin/pr/*')
                 }
                 branch('${sha1}')

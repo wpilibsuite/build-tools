@@ -2,21 +2,21 @@ stage('build') {
     def builds = [:]
     builds['linux'] = {
         node('linux') {
-            git poll: true, url: 'https://github.com/thadhouse/wpiutil-test.git'
+            git poll: true, url: 'https://github.com/wpilibsuite/wpiutil.git'
             sh './gradlew clean build -PjenkinsBuild -PskipAthena -PreleaseBuild -PreleaseType=OFFICIAL'
             stash includes: 'build/libs/**/*.jar, build/outputs/**/*.*', name: 'linux'
         }
     }
     builds['mac'] = {
         node('mac') {
-            git poll: true, url: 'https://github.com/thadhouse/wpiutil-test.git'
+            git poll: true, url: 'https://github.com/wpilibsuite/wpiutil.git'
             sh './gradlew clean build -PjenkinsBuild -PskipAthena -PreleaseBuild -PreleaseType=OFFICIAL'
             stash includes: 'build/libs/**/*.jar, build/outputs/**/*.*', name: 'mac'
         }
     }
     builds['windows'] = {
         node('windows') {
-            git poll: true, url: 'https://github.com/thadhouse/wpiutil-test.git'
+            git poll: true, url: 'https://github.com/wpilibsuite/wpiutil.git'
             bat '.\\gradlew.bat  clean build -PjenkinsBuild -PskipAthena -PreleaseBuild -PreleaseType=OFFICIAL'
             stash includes: 'build/libs/**/*.jar, build/outputs/**/*.*', name: 'windows'
         }
@@ -24,7 +24,7 @@ stage('build') {
     builds['arm'] = {
         node {
             ws("workspace/${env.JOB_NAME}/arm") {
-                git poll: true, url: 'https://github.com/thadhouse/wpiutil-test.git'
+                git poll: true, url: 'https://github.com/wpilibsuite/wpiutil.git'
                 sh './gradlew clean build -PjenkinsBuild -onlyAthena -PreleaseBuild -PreleaseType=OFFICIAL'
                 stash includes: 'build/libs/**/*.jar, build/outputs/**/*.*', name: 'arm'
             }
@@ -47,7 +47,7 @@ stage('combine') {
             }
             sh 'chmod +x ./gradlew'
             sh './gradlew publish -Pwpiutil -Prepo=release'
-            archiveArtifacts 'products/*.zip, product/*.jar'
+            archiveArtifacts 'products/*.zip, products/*.jar'
         }
     }
 }
