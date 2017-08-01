@@ -52,3 +52,12 @@ stage('combine') {
         }
     }
 }
+unstash 'windows'
+                unstash 'arm'
+            }
+            sh 'chmod +x ./uberjar/gradlew'
+            sh 'cd ./uberjar && ./gradlew clean publish'
+            archiveArtifacts 'uberjar/build/*.zip, uberjar/build/*.jar'
+        }
+    }
+}
