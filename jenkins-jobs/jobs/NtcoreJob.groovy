@@ -7,8 +7,9 @@ folder(basePath)
         steps {
             gradle {
                 tasks('clean')
-                tasks('build')
-                switches('-PjenkinsBuild -PskipAthena -PreleaseBuild -PbuildAll --console=plain --stacktrace')
+                tasks(':native:wpiutil:build')
+                tasks(':native:ntcore:build')
+                switches('-PjenkinsBuild')
             }
         }
     }
@@ -21,9 +22,10 @@ folder(basePath)
         label(platform.toLowerCase())
         steps {
             gradle {
-            tasks('clean')
-            tasks('build')
-            switches('-PjenkinsBuild -PskipAthena -PreleaseBuild -PbuildAll -PskipAllTests --console=plain --stacktrace')
+                tasks('clean')
+                tasks(':native:wpiutil:build')
+                tasks(':native:ntcore:build')
+                switches('-PjenkinsBuild -PwithoutTests')
             }
         }
     }
@@ -35,8 +37,9 @@ def armPrJob = job("$basePath/ntcore ARM - PR") {
     steps {
         gradle {
             tasks('clean')
-            tasks('build')
-            switches('-PjenkinsBuild -PonlyAthena -PreleaseBuild -PbuildAll --console=plain --stacktrace')
+            tasks(':arm:wpiutil:build')
+            tasks(':arm:ntcore:build')
+            switches('-PjenkinsBuild')
         }
     }
 }
