@@ -1,31 +1,14 @@
 def basePath = 'ntcore'
 folder(basePath)
 
-['Mac', 'Linux'].each { platform ->
+['Windows', 'Mac', 'Linux'].each { platform ->
     def prJob = job("$basePath/ntcore $platform - PR") {
         label(platform.toLowerCase())
         steps {
             gradle {
                 tasks('clean')
-                tasks(':native:wpiutil:build')
-                tasks(':native:ntcore:build')
-                switches('-PjenkinsBuild')
-            }
-        }
-    }
-    setupProperties(prJob)
-    setupPrJob(prJob, platform)
-}
-
-['Windows'].each { platform ->
-    def prJob = job("$basePath/ntcore $platform - PR") {
-        label(platform.toLowerCase())
-        steps {
-            gradle {
-                tasks('clean')
-                tasks(':native:wpiutil:build')
-                tasks(':native:ntcore:build')
-                switches('-PjenkinsBuild -PwithoutTests')
+                tasks('build')
+                switches('-PjenkinsBuild -PskipAthena -PreleaseBuild -PbuildAll --console=plain --stacktrace')
             }
         }
     }
@@ -37,9 +20,8 @@ def armPrJob = job("$basePath/ntcore ARM - PR") {
     steps {
         gradle {
             tasks('clean')
-            tasks(':arm:wpiutil:build')
-            tasks(':arm:ntcore:build')
-            switches('-PjenkinsBuild')
+            tasks('build')
+            switches('-PjenkinsBuild -PonlyAthena -PreleaseBuild -PbuildAll --console=plain --stacktrace')
         }
     }
 }

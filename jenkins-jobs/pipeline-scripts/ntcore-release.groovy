@@ -2,35 +2,31 @@ stage('build') {
     def builds = [:]
     builds['linux'] = {
         node('linux') {
-            git poll: true, url:'https://github.com/wpilibsuite/ntcore.git'
-            sh './gradlew clean :native:ntcore:build :native:wpiutil:build ntcoreSourceZip wpiutilSourceZip ' +
-                    '-PreleaseType=OFFICIAL -PjenkinsBuild'
-            stash includes: 'native/*/build/libs/**/*.jar, native/*/build/**/*.zip, build/*.zip, build/*.txt', name: 'linux'
+            git poll: true, url: 'https://github.com/wpilibsuite/ntcore.git'
+            sh './gradlew clean build -PjenkinsBuild -PskipAthena -PreleaseBuild -PreleaseType=OFFICIAL --console=plain --stacktrace'
+            stash includes: 'build/libs/**/*.jar, build/outputs/**/*.*', name: 'linux'
         }
     }
     builds['mac'] = {
         node('mac') {
             git poll: true, url: 'https://github.com/wpilibsuite/ntcore.git'
-            sh './gradlew clean :native:ntcore:build :native:wpiutil:build ntcoreSourceZip wpiutilSourceZip ' +
-                    '-PreleaseType=OFFICIAL -PjenkinsBuild'
-            stash includes: 'native/*/build/libs/**/*.jar, native/*/build/**/*.zip, build/*.zip, build/*.txt', name: 'mac'
+            sh './gradlew clean build -PjenkinsBuild -PskipAthena -PreleaseBuild -PreleaseType=OFFICIAL --console=plain --stacktrace'
+            stash includes: 'build/libs/**/*.jar, build/outputs/**/*.*', name: 'mac'
         }
     }
     builds['windows'] = {
         node('windows') {
             git poll: true, url: 'https://github.com/wpilibsuite/ntcore.git'
-            bat '.\\gradlew.bat clean :native:ntcore:build :native:wpiutil:build ntcoreSourceZip wpiutilSourceZip ' +
-                    '-PreleaseType=OFFICIAL -PjenkinsBuild -PwithoutTests'
-            stash includes: 'native/*/build/libs/**/*.jar, native/*/build/**/*.zip, build/*.zip, build/*.txt', name: 'windows'
+            bat '.\\gradlew.bat  clean build -PjenkinsBuild -PskipAthena -PreleaseBuild -PreleaseType=OFFICIAL --console=plain --stacktrace'
+            stash includes: 'build/libs/**/*.jar, build/outputs/**/*.*', name: 'windows'
         }
     }
     builds['arm'] = {
         node {
             ws("workspace/${env.JOB_NAME}/arm") {
                 git poll: true, url: 'https://github.com/wpilibsuite/ntcore.git'
-                sh './gradlew clean :arm:wpiutil:build :arm:ntcore:build -PreleaseType=OFFICIAL -PjenkinsBuild'
-                stash includes: 'arm/*/build/libs/**/*.jar, arm/ntcore/build/ntcore-arm.zip, ' +
-                        'arm/wpiutil/build/wpiutil-arm.zip', name: 'arm'
+                sh './gradlew clean build -PjenkinsBuild -onlyAthena -PreleaseBuild -PreleaseType=OFFICIAL --console=plain --stacktrace'
+                stash includes: 'build/libs/**/*.jar, build/outputs/**/*.*', name: 'arm'
             }
         }
     }
@@ -41,17 +37,17 @@ stage('build') {
 stage('combine') {
     node {
         ws("workspace/${env.JOB_NAME}/combine") {
-            git poll: false, url: 'https://github.com/wpilibsuite/build-tools.git'
+            git poll: false, url: 'https://github.com/ThadHouse/JenkinsCombiner.git'
             sh 'git clean -xfd'
-            dir('uberjar/products') {
+            dir('products') {
                 unstash 'linux'
                 unstash 'mac'
                 unstash 'windows'
                 unstash 'arm'
             }
-            sh 'chmod +x ./uberjar/gradlew'
-            sh 'cd ./uberjar && ./gradlew clean publish -Prepo=release'
-            archiveArtifacts 'uberjar/build/*.zip, uberjar/build/*.jar'
+            sh 'chmod +x ./gradlew'
+            sh './gradlew publish -Pntcore -Prepo=release'
+            archiveArtifacts 'products/*.zip, products/*.jar'
         }
     }
 }

@@ -3,21 +3,21 @@ stage('build') {
     builds['linux'] = {
         node('linux') {
             git poll: true, url: 'https://github.com/wpilibsuite/wpiutil.git'
-            sh './gradlew clean build -PjenkinsBuild -PskipAthena -PreleaseBuild -PreleaseType=OFFICIAL'
+            sh './gradlew clean build -PjenkinsBuild -PskipAthena -PreleaseBuild -PreleaseType=OFFICIAL --console=plain --stacktrace'
             stash includes: 'build/libs/**/*.jar, build/outputs/**/*.*', name: 'linux'
         }
     }
     builds['mac'] = {
         node('mac') {
             git poll: true, url: 'https://github.com/wpilibsuite/wpiutil.git'
-            sh './gradlew clean build -PjenkinsBuild -PskipAthena -PreleaseBuild -PreleaseType=OFFICIAL'
+            sh './gradlew clean build -PjenkinsBuild -PskipAthena -PreleaseBuild -PreleaseType=OFFICIAL --console=plain --stacktrace'
             stash includes: 'build/libs/**/*.jar, build/outputs/**/*.*', name: 'mac'
         }
     }
     builds['windows'] = {
         node('windows') {
             git poll: true, url: 'https://github.com/wpilibsuite/wpiutil.git'
-            bat '.\\gradlew.bat  clean build -PjenkinsBuild -PskipAthena -PreleaseBuild -PreleaseType=OFFICIAL'
+            bat '.\\gradlew.bat  clean build -PjenkinsBuild -PskipAthena -PreleaseBuild -PreleaseType=OFFICIAL --console=plain --stacktrace'
             stash includes: 'build/libs/**/*.jar, build/outputs/**/*.*', name: 'windows'
         }
     }
@@ -25,7 +25,7 @@ stage('build') {
         node {
             ws("workspace/${env.JOB_NAME}/arm") {
                 git poll: true, url: 'https://github.com/wpilibsuite/wpiutil.git'
-                sh './gradlew clean build -PjenkinsBuild -onlyAthena -PreleaseBuild -PreleaseType=OFFICIAL'
+                sh './gradlew clean build -PjenkinsBuild -onlyAthena -PreleaseBuild -PreleaseType=OFFICIAL --console=plain --stacktrace'
                 stash includes: 'build/libs/**/*.jar, build/outputs/**/*.*', name: 'arm'
             }
         }
