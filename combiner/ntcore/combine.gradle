@@ -1,0 +1,91 @@
+def finder = new FileNameFinder()
+
+def pubVersion = file(finder.getFileNames(new File(projectDir, 'products').absolutePath, '**/version.txt').first()).text.trim()
+
+def headerFile = file(finder.getFileNames(new File(projectDir, 'products').absolutePath, '**/*headers.zip').first())
+
+def sourcesFile = file(finder.getFileNames(new File(projectDir, 'products').absolutePath, '**/*sources.zip').first())
+
+def cppFiles = files(finder.getFileNames(new File(projectDir, 'products').absolutePath, '**/zipcppntcorentcore-classifier-*.zip'))
+
+def jniFiles = files(finder.getFileNames(new File(projectDir, 'products').absolutePath, '**/jnijnintcorentcoreJNI-classifier-*.jar'))
+
+def jarSources = file(finder.getFileNames(new File(projectDir, 'products').absolutePath, '**/*-sources.jar').first())
+
+def jarJavadoc = file(finder.getFileNames(new File(projectDir, 'products').absolutePath, '**/*-javadoc.jar').first())
+
+def jar = files(finder.getFileNames(new File(projectDir, 'products').absolutePath, '**/*-javaArtifact.jar').first())
+
+cppFiles.each {
+    println getClassifier(it)
+}
+
+apply plugin: 'maven-publish'
+
+if (!project.hasProperty('repo')) {
+    project.extensions.repo = 'development'
+}
+
+publishing {
+    repositories {
+        maven {
+            url "${System.getProperty('user.home')}/releases/maven/${project.repo}"
+        }
+    }
+}
+
+def baseArtifactId = 'ntcore'
+def artifactGroupId = 'edu.wpi.first.ntcore'
+
+publishing {
+    publications {
+        java(MavenPublication) {
+            artifact jar
+
+            artifact (jarJavadoc) {
+                classifier 'javadoc'
+            }
+
+            artifact (jarSources) {
+                classifier 'sources'
+            }
+
+
+            artifactId = "${baseArtifactId}-java"
+            groupId artifactGroupId
+            version pubVersion
+        }
+        cpp(MavenPublication) {
+            artifact (headerFile) {
+                classifier = 'headers'
+            }
+
+            artifact (sourcesFile) {
+                classifier = 'sources'
+            }
+
+            cppFiles.each { file->
+                artifact (file) {
+                    classifier = getClassifier(file)
+                }
+            }
+
+
+            artifactId = "${baseArtifactId}-cpp"
+            groupId artifactGroupId
+            version pubVersion
+        }
+        jni(MavenPublication) {
+            jniFiles.each { file->
+                artifact (file) {
+                    classifier = getClassifier(file)
+                }
+            }
+
+
+            artifactId = "${baseArtifactId}-jni"
+            groupId artifactGroupId
+            version pubVersion
+        }
+    }
+}

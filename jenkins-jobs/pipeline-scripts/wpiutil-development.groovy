@@ -4,21 +4,21 @@ stage('build') {
         node('linux') {
             git poll: true, url: 'https://github.com/wpilibsuite/wpiutil.git'
             sh './gradlew clean build -PjenkinsBuild -PskipAthena -PreleaseBuild -PbuildAll --console=plain --stacktrace'
-            stash includes: 'build/libs/**/*.jar, build/outputs/**/*.*', name: 'linux'
+            stash includes: 'build/outputs/**/*.*', name: 'linux'
         }
     }
     builds['mac'] = {
         node('mac') {
             git poll: true, url: 'https://github.com/wpilibsuite/wpiutil.git'
             sh './gradlew clean build -PjenkinsBuild -PskipAthena -PreleaseBuild -PbuildAll --console=plain --stacktrace'
-            stash includes: 'build/libs/**/*.jar, build/outputs/**/*.*', name: 'mac'
+            stash includes: 'build/outputs/**/*.*', name: 'mac'
         }
     }
     builds['windows'] = {
         node('windows') {
             git poll: true, url: 'https://github.com/wpilibsuite/wpiutil.git'
             bat '.\\gradlew.bat  clean build -PjenkinsBuild -PskipAthena -PreleaseBuild -PbuildAll --console=plain --stacktrace'
-            stash includes: 'build/libs/**/*.jar, build/outputs/**/*.*', name: 'windows'
+            stash includes: 'build/outputs/**/*.*', name: 'windows'
         }
     }
     builds['arm'] = {
@@ -37,18 +37,17 @@ stage('build') {
 stage('combine') {
     node {
         ws("workspace/${env.JOB_NAME}/combine") {
-            git poll: false, url: 'https://github.com/ThadHouse/JenkinsCombiner.git'
+            git poll: false, url: 'https://github.com/wpilibsuite/build-tools.git'
             sh 'git clean -xfd'
-            dir('products') {
+            dir('combiner/products') {
                 unstash 'linux'
                 unstash 'mac'
                 unstash 'windows'
                 unstash 'arm'
             }
-            sh 'chmod +x ./gradlew'
-            sh './gradlew publish -Pwpiutil'
-            //sh 'ls products/'
-            archiveArtifacts 'products/**/*.zip, products/**/*.jar'
+            sh 'chmod +x ./combiner/gradlew'
+            sh 'cd ./combiner && ./gradlew publish -Pwpiutil'
+            archiveArtifacts 'combiner/products/**/*.zip, combiner/products/**/*.jar'
         }
     }
 }
