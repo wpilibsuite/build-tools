@@ -3,21 +3,21 @@ stage('build') {
     builds['linux'] = {
         node('linux') {
             git poll: true, url: 'https://github.com/wpilibsuite/ntcore.git'
-            sh './gradlew clean build -PjenkinsBuild -PskipAthena -PreleaseBuild -PbuildAll -PreleaseType=OFFICIAL --console=plain --stacktrace'
+            sh './gradlew clean build -PjenkinsBuild -PskipAthena -PreleaseBuild -PbuildAll -PreleaseType=OFFICIAL --console=plain --stacktrace --refresh-dependencies'
             stash includes: 'build/outputs/**/*.*', name: 'linux'
         }
     }
     builds['mac'] = {
         node('mac') {
             git poll: true, url: 'https://github.com/wpilibsuite/ntcore.git'
-            sh './gradlew clean build -PjenkinsBuild -PskipAthena -PreleaseBuild -PbuildAll -PreleaseType=OFFICIAL --console=plain --stacktrace'
+            sh './gradlew clean build -PjenkinsBuild -PskipAthena -PreleaseBuild -PbuildAll -PreleaseType=OFFICIAL --console=plain --stacktrace --refresh-dependencies'
             stash includes: 'build/outputs/**/*.*', name: 'mac'
         }
     }
     builds['windows'] = {
         node('windows') {
             git poll: true, url: 'https://github.com/wpilibsuite/ntcore.git'
-            bat '.\\gradlew.bat  clean build -PjenkinsBuild -PskipAthena -PreleaseBuild -PbuildAll -PreleaseType=OFFICIAL -PskipAllTests --console=plain --stacktrace'
+            bat '.\\gradlew.bat  clean build -PjenkinsBuild -PskipAthena -PreleaseBuild -PbuildAll -PreleaseType=OFFICIAL -PskipAllTests --console=plain --stacktrace --refresh-dependencies'
             stash includes: 'build/outputs/**/*.*', name: 'windows'
         }
     }
@@ -25,7 +25,7 @@ stage('build') {
         node {
             ws("workspace/${env.JOB_NAME}/arm") {
                 git poll: true, url: 'https://github.com/wpilibsuite/ntcore.git'
-                sh './gradlew clean build -PjenkinsBuild -PonlyAthena -PreleaseBuild -PbuildAll -PreleaseType=OFFICIAL --console=plain --stacktrace'
+                sh './gradlew clean build -PjenkinsBuild -PonlyAthena -PreleaseBuild -PbuildAll -PreleaseType=OFFICIAL --console=plain --stacktrace --refresh-dependencies'
                 stash includes: 'build/libs/**/*.jar, build/outputs/**/*.*', name: 'arm'
             }
         }

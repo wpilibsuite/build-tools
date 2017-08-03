@@ -8,7 +8,7 @@ folder(basePath)
             gradle {
                 tasks('clean')
                 tasks('build')
-                switches('-PjenkinsBuild -PskipAthena -PreleaseBuild -PbuildAll --console=plain --stacktrace')
+                switches('-PjenkinsBuild -PskipAthena -PreleaseBuild -PbuildAll --console=plain --stacktrace --refresh-dependencies')
             }
         }
     }
@@ -23,7 +23,7 @@ folder(basePath)
             gradle {
                 tasks('clean')
                 tasks('build')
-                switches('-PjenkinsBuild -PskipAthena -PreleaseBuild -PbuildAll -PskipAllTests --console=plain --stacktrace')
+                switches('-PjenkinsBuild -PskipAthena -PreleaseBuild -PbuildAll -PskipAllTests --console=plain --stacktrace --refresh-dependencies')
             }
         }
     }
@@ -36,7 +36,7 @@ def armPrJob = job("$basePath/ntcore ARM - PR") {
         gradle {
             tasks('clean')
             tasks('build')
-            switches('-PjenkinsBuild -PonlyAthena -PreleaseBuild -PbuildAll --console=plain --stacktrace')
+            switches('-PjenkinsBuild -PonlyAthena -PreleaseBuild -PbuildAll --console=plain --stacktrace --refresh-dependencies')
         }
     }
 }
