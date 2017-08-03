@@ -14,7 +14,7 @@ def jarSources = file(finder.getFileNames(new File(projectDir, 'products').absol
 
 def jarJavadoc = file(finder.getFileNames(new File(projectDir, 'products').absolutePath, '**/*-javadoc.jar').first())
 
-def jar = files(finder.getFileNames(new File(projectDir, 'products').absolutePath, '**/*-javaArtifact.jar').first())
+def jar = file(finder.getFileNames(new File(projectDir, 'products').absolutePath, '**/*-javaArtifact.jar').first())
 
 cppFiles.each {
     println getClassifier(it)
