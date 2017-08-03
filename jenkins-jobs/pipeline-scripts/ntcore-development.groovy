@@ -17,7 +17,7 @@ stage('build') {
     builds['windows'] = {
         node('windows') {
             git poll: true, url: 'https://github.com/wpilibsuite/ntcore.git'
-            bat '.\\gradlew.bat  clean build -PjenkinsBuild -PskipAthena -PreleaseBuild -PbuildAll --console=plain --stacktrace'
+            bat '.\\gradlew.bat  clean build -PjenkinsBuild -PskipAthena -PreleaseBuild -PbuildAll -PskipAllTests --console=plain --stacktrace'
             stash includes: 'build/outputs/**/*.*', name: 'windows'
         }
     }
