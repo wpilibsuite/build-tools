@@ -33,6 +33,20 @@ publishing {
     }
 }
 
+def allOutput = file('outputs')
+
+def allZipTask = project.tasks.create("wpiutilAllZip", Zip) {
+    description = 'Creates a zip with all wpiutil artifacts'
+    classifier = 'all'
+    baseName = 'wpiutil'
+    destinationDir = allOutput
+    duplicatesStrategy = 'exclude'
+
+    cppFiles.each { 
+        from project.zipTree(it)
+    }
+}
+
 def baseArtifactId = 'wpiutil'
 def artifactGroupId = 'edu.wpi.first.wpiutil'
 
@@ -62,6 +76,8 @@ publishing {
             artifact (sourcesFile) {
                 classifier = 'sources'
             }
+
+            artifact allZipTask
 
             cppFiles.each { file->
                 artifact (file) {

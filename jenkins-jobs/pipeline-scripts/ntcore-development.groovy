@@ -47,7 +47,7 @@ stage('combine') {
             }
             sh 'chmod +x ./combiner/gradlew'
             sh 'cd ./combiner && ./gradlew publish -Pntcore'
-            archiveArtifacts 'combiner/products/**/*.zip, combiner/products/**/*.jar'
+            archiveArtifacts 'combiner/products/**/*.zip, combiner/products/**/*.jar, combiner/outputs/**/*.*'
         }
     }
 }

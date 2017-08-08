@@ -34,6 +34,32 @@ publishing {
     }
 }
 
+def allOutput = file('outputs')
+
+def allZipTask = project.tasks.create("ntcoreAllCppZip", Zip) {
+    description = 'Creates a zip with all ntcore cpp artifacts'
+    classifier = 'all'
+    baseName = 'ntcore'
+    destinationDir = allOutput
+    duplicatesStrategy = 'exclude'
+
+    cppFiles.each { 
+        from project.zipTree(it)
+    }
+}
+
+def allJniTask = project.tasks.create("ntcoreAllJNIJar", Jar) {
+    description = 'Creates a jar with all ntcore jni artifacts'
+    classifier = 'all'
+    baseName = 'ntcoreJNI'
+    destinationDir = allOutput
+    duplicatesStrategy = 'exclude'
+
+    jniFiles.each { 
+        from project.zipTree(it)
+    }
+}
+
 def baseArtifactId = 'ntcore'
 def artifactGroupId = 'edu.wpi.first.ntcore'
 
@@ -64,12 +90,13 @@ publishing {
                 classifier = 'sources'
             }
 
+            artifact allZipTask
+
             cppFiles.each { file->
                 artifact (file) {
                     classifier = getClassifier(file)
                 }
             }
-
 
             artifactId = "${baseArtifactId}-cpp"
             groupId artifactGroupId
@@ -82,6 +109,7 @@ publishing {
                 }
             }
 
+            artifact allJniTask
 
             artifactId = "${baseArtifactId}-jni"
             groupId artifactGroupId
