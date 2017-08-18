@@ -11,3 +11,7 @@ if (project.hasProperty('wpiutil')) {
 if (project.hasProperty('ntcore')) {
     apply from: 'ntcore/combine.gradle'
 }
+
+if (project.hasProperty('cscore')) {
+    apply from: 'cscore/combine.gradle'
+}

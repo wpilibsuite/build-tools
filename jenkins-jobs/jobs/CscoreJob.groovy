@@ -1,95 +1,97 @@
-def basePath = 'CSCore'
+def basePath = 'cscore'
 folder(basePath)
 
-def prJob = job("$basePath/CSCore - PR") {
-    scm {
-        git {
-            remote {
-                url('https://github.com/wpilibsuite/cscore.git')
-                refspec('+refs/pull/*:refs/remotes/origin/pr/*')
+['Mac', 'Linux', 'Windows'].each { platform ->
+    def prJob = job("$basePath/cscore $platform - PR") {
+        label(platform.toLowerCase())
+        steps {
+            gradle {
+                tasks('clean')
+                tasks('build')
+                switches('-PjenkinsBuild -PskipAthena -PreleaseBuild -PbuildAll --console=plain --stacktrace --refresh-dependencies')
             }
-            // This is purposefully not a GString. This is a jenkins environment
-            // variable, not a groovy variable
-            branch('${sha1}')
         }
     }
-    triggers {
-        githubPullRequest {
-            admins(['333fred', 'PeterJohnson', 'bradamiller', 'Kevin-OConnor'])
-            orgWhitelist('wpilibsuite')
-            useGitHubHooks()
+    setupProperties(prJob)
+    setupPrJob(prJob, platform)
+}
+
+def armPrJob = job("$basePath/cscore ARM - PR") {
+    steps {
+        gradle {
+            tasks('clean')
+            tasks('build')
+            switches('-PjenkinsBuild -PonlyAthena -PreleaseBuild -PbuildAll --console=plain --stacktrace --refresh-dependencies')
         }
     }
 }
+setupProperties(armPrJob)
+setupPrJob(armPrJob, 'ARM')
 
-setupProperties(prJob)
-setupBuildSteps(prJob, false)
-
-def developmentJob = job("$basePath/CSCore - Development") {
+def developmentJob = pipelineJob("$basePath/cscore - Development") {
+    definition {
+        cps {
+            try {
+                script(readFileFromWorkspace('jenkins-jobs/pipeline-scripts/cscore-development.groovy'))
+            } catch (Exception e) {
+                script(readFileFromWorkspace('pipeline-scripts/cscore-development.groovy'))
+            }
+            sandbox()
+        }
+    }
     triggers {
         scm('H/15 * * * *')
     }
-    publishers {
-        downstream('Eclipse Plugins/Eclipse Plugins - Development')
-    }
 }
 
-setupGit(developmentJob)
 setupProperties(developmentJob)
-setupBuildSteps(developmentJob, true)
 
-def releaseJob = job("$basePath/CSCore - Release")
-
-setupGit(releaseJob)
-setupProperties(releaseJob)
-setupBuildSteps(releaseJob, true, ['releaseType=OFFICIAL'])
-
-def setupGit(job) {
-    job.with {
-        scm {
-            git {
-                remote {
-                    url('https://github.com/wpilibsuite/cscore.git')
-                    branch('*/master')
-                }
+def releaseJob = pipelineJob("$basePath/cscore - Release") {
+    definition {
+        cps {
+            try {
+                script(readFileFromWorkspace('jenkins-jobs/pipeline-scripts/cscore-release.groovy'))
+            } catch (Exception e) {
+                script(readFileFromWorkspace('pipeline-scripts/cscore-release.groovy'))
             }
+            sandbox()
         }
     }
 }
 
+setupProperties(releaseJob)
+
 def setupProperties(job) {
     job.with {
-        // Note: The pull request builder plugin will fail without this property set.
+        // Note: the pull request builder plugin will fail without this property set.
         properties {
             githubProjectUrl('https://github.com/wpilibsuite/cscore')
         }
     }
 }
 
-def setupBuildSteps(job, usePublish, properties = null) {
+def setupPrJob(job, name) {
     job.with {
-        steps {
-            gradle {
-                tasks('clean')
-                tasks('build')
-                if (usePublish) tasks('publish')
-                switches('-PjenkinsBuild')
-                if (properties != null) {
-                    properties.each { prop ->
-                        switches("-P$prop")
-                    }
+        scm {
+            git {
+                remote {
+                    url('https://github.com/wpilibsuite/cscore.git')
+                    refspec('+refs/pull/*:refs/remotes/origin/pr/*')
                 }
+                branch('${sha1}')
             }
         }
-        if (usePublish) {
-            publishers {
-                archiveArtifacts {
-                    pattern('**/build/cscore*.zip')
-                    pattern('**/build/libs/cscore*.jar')
-                    onlyIfSuccessful()
+        triggers {
+            githubPullRequest {
+                admins(['333fred', 'PeterJohnson', 'bradamiller', 'Kevin-OConnor'])
+                orgWhitelist('wpilibsuite')
+                useGitHubHooks()
+                extensions {
+                    commitStatus {
+                        context("frcjenkins - $name")
+                    }
                 }
             }
         }
     }
 }
-
