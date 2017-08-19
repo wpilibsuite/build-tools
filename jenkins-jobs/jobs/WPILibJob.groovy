@@ -1,21 +1,6 @@
 def basePath = 'WPILib'
 folder(basePath)
 
-['Mac', 'Linux', 'Windows'].each { platform ->
-    def prJob = job("$basePath/WPILib $platform - PR") {
-        label(platform.toLowerCase())
-        steps {
-            gradle {
-                tasks('clean')
-                tasks('build')
-                switches('-PjenkinsBuild -PskipAthena -PreleaseBuild -PbuildAll --console=plain --stacktrace --refresh-dependencies')
-            }
-        }
-    }
-    setupProperties(prJob, false)
-    setupPrJob(prJob, platform)
-}
-
 def athenaPrJob = job("$basePath/WPILib - PR Athena")
 setupPrJob(athenaPrJob, 'Athena')
 setupProperties(athenaPrJob)
@@ -32,13 +17,13 @@ def developmentJob = job("$basePath/WPILib - Development") {
 
 setupProperties(developmentJob)
 setupGit(developmentJob)
-setupBuildSteps(developmentJob, true, [], 'development')
+setupBuildSteps(developmentJob, true, ['makeSim'], 'development')
 
 def releaseJob = job("$basePath/WPILib - Release")
 
 setupProperties(releaseJob)
 setupGit(releaseJob)
-setupBuildSteps(releaseJob, true, ['releaseType=OFFICIAL'], 'release')
+setupBuildSteps(releaseJob, true, ['releaseType=OFFICIAL', 'makeSim'], 'release')
 
 // Allow anyone to release the mutex by running a job
 def mutexJob = job("$basePath/Release Mutex") {
@@ -108,7 +93,7 @@ def setupBuildSteps(job, usePublish, properties = null, jobName = null) {
             gradle {
                 tasks('clean')
                 tasks('build')
-                switches('-PjenkinsBuild -PreleaseBuild -PbuildAll --console=plain --stacktrace --refresh-dependencies')
+                switches('-PjenkinsBuild')
                 if (properties != null) {
                     properties.each { prop ->
                         switches("-P$prop")
@@ -119,7 +104,7 @@ def setupBuildSteps(job, usePublish, properties = null, jobName = null) {
             if (usePublish) {
                 gradle {
                     tasks('publish')
-                    switches('-PjenkinsBuild -PreleaseBuild -PbuildAll --console=plain --stacktrace --refresh-dependencies')
+                    switches('-PjenkinsBuild')
                     if (properties != null) {
                         properties.each { prop ->
                             switches("-P$prop")
