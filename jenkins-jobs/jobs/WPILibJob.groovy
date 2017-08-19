@@ -108,7 +108,7 @@ def setupBuildSteps(job, usePublish, properties = null, jobName = null) {
             gradle {
                 tasks('clean')
                 tasks('build')
-                switches('-PjenkinsBuild -PonlyAthena -PreleaseBuild -PbuildAll --console=plain --stacktrace --refresh-dependencies')
+                switches('-PjenkinsBuild -PreleaseBuild -PbuildAll --console=plain --stacktrace --refresh-dependencies')
                 if (properties != null) {
                     properties.each { prop ->
                         switches("-P$prop")
@@ -119,7 +119,7 @@ def setupBuildSteps(job, usePublish, properties = null, jobName = null) {
             if (usePublish) {
                 gradle {
                     tasks('publish')
-                    switches('-PjenkinsBuild -PonlyAthena -PreleaseBuild -PbuildAll --console=plain --stacktrace --refresh-dependencies')
+                    switches('-PjenkinsBuild -PreleaseBuild -PbuildAll --console=plain --stacktrace --refresh-dependencies')
                     if (properties != null) {
                         properties.each { prop ->
                             switches("-P$prop")
