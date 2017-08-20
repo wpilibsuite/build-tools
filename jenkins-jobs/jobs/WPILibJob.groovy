@@ -19,7 +19,7 @@ folder(basePath)
 def athenaPrJob = job("$basePath/WPILib - PR Athena")
 setupPrJob(athenaPrJob, 'Athena')
 setupProperties(athenaPrJob)
-setupBuildSteps(athenaPrJob, false, ['onlyAthena', 'releaseBuild'])
+setupBuildSteps(athenaPrJob, false, ['releaseBuild'])
 
 def developmentJob = job("$basePath/WPILib - Development") {
     triggers {
