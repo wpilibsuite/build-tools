@@ -1,7 +1,7 @@
 def basePath = 'WPILib'
 folder(basePath)
 
-['Windows', 'Linux'].each { platform ->
+['Windows', 'Linux', 'Mac'].each { platform ->
     def prJob = job("$basePath/WPILib $platform - PR") {
         label(platform.toLowerCase())
         steps {
