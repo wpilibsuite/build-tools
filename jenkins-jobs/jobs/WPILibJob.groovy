@@ -1,7 +1,7 @@
 def basePath = 'WPILib'
 folder(basePath)
 
-['Windows', 'Linux', 'Mac'].each { platform ->
+['Windows', 'Linux'].each { platform ->
     def prJob = job("$basePath/WPILib $platform - PR") {
         label(platform.toLowerCase())
         steps {
@@ -19,7 +19,7 @@ folder(basePath)
 def athenaPrJob = job("$basePath/WPILib - PR Athena")
 setupPrJob(athenaPrJob, 'Athena')
 setupProperties(athenaPrJob)
-setupBuildSteps(athenaPrJob, false)
+setupBuildSteps(athenaPrJob, false, ['-PonlyAthena', '-PreleaseBuild'])
 
 def developmentJob = job("$basePath/WPILib - Development") {
     triggers {
@@ -108,7 +108,7 @@ def setupBuildSteps(job, usePublish, properties = null, jobName = null) {
             gradle {
                 tasks('clean')
                 tasks('build')
-                switches('-PjenkinsBuild')
+                switches('-PjenkinsBuild --console=plain --stacktrace')
                 if (properties != null) {
                     properties.each { prop ->
                         switches("-P$prop")
