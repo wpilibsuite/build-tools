@@ -1,6 +1,21 @@
 def basePath = 'WPILib'
 folder(basePath)
 
+['Windows'].each { platform ->
+    def prJob = job("$basePath/WPILib $platform - PR") {
+        label(platform.toLowerCase())
+        steps {
+            gradle {
+                tasks('clean')
+                tasks('build')
+                switches('-PjenkinsBuild -PskipAthena -PreleaseBuild -PbuildAll --console=plain --stacktrace --refresh-dependencies')
+            }
+        }
+    }
+    setupProperties(prJob, false)
+    setupPrJob(prJob, platform)
+}
+
 def athenaPrJob = job("$basePath/WPILib - PR Athena")
 setupPrJob(athenaPrJob, 'Athena')
 setupProperties(athenaPrJob)
