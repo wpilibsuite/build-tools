@@ -8,7 +8,7 @@ folder(basePath)
             gradle {
                 tasks('clean')
                 tasks('build')
-                switches('-PjenkinsBuild -PskipAthena -PreleaseBuild -PbuildAll --console=plain --stacktrace --refresh-dependencies')
+                switches('-PjenkinsBuild -PskipAthena -PreleaseBuild -PbuildAll --console=plain --info --stacktrace --refresh-dependencies')
             }
         }
     }
@@ -108,7 +108,7 @@ def setupBuildSteps(job, usePublish, properties = null, jobName = null) {
             gradle {
                 tasks('clean')
                 tasks('build')
-                switches('-PjenkinsBuild --console=plain --stacktrace')
+                switches('-PjenkinsBuild --console=plain --stacktrace --info')
                 if (properties != null) {
                     properties.each { prop ->
                         switches("-P$prop")
