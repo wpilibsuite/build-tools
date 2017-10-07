@@ -87,7 +87,7 @@ def mutexJob = job("$basePath/Release Mutex") {
     }
 }
 
-setupProperties(mutexJob, false)
+setupProperties(mutexJob)
 
 def setupGit(job) {
     job.with {
