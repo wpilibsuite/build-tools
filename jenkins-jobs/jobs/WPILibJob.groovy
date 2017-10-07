@@ -21,24 +21,38 @@ setupPrJob(athenaPrJob, 'Athena')
 setupProperties(athenaPrJob)
 setupBuildSteps(athenaPrJob, false, ['releaseBuild'])
 
-def developmentJob = job("$basePath/WPILib - Development") {
+def developmentJob = pipelineJob("$basePath/wpiutil - Development") {
+    definition {
+        cps {
+            try {
+                script(readFileFromWorkspace('jenkins-jobs/pipeline-scripts/allwpilib-development.groovy'))
+            } catch (Exception e) {
+                script(readFileFromWorkspace('pipeline-scripts/allwpilib-development.groovy'))
+            }
+            sandbox()
+        }
+    }
     triggers {
         scm('H/15 * * * *')
-    }
-    publishers {
-        downstream('Eclipse Plugins/Eclipse Plugins - Development', 'UNSTABLE')
     }
 }
 
 setupProperties(developmentJob)
-setupGit(developmentJob)
-setupBuildSteps(developmentJob, true, ['makeSim'], 'development')
 
-def releaseJob = job("$basePath/WPILib - Release")
+def releaseJob = pipelineJob("$basePath/wpiutil - Release") {
+    definition {
+        cps {
+            try {
+                script(readFileFromWorkspace('jenkins-jobs/pipeline-scripts/allwpilib-release.groovy'))
+            } catch (Exception e) {
+                script(readFileFromWorkspace('pipeline-scripts/allwpilib-release.groovy'))
+            }
+            sandbox()
+        }
+    }
+}
 
 setupProperties(releaseJob)
-setupGit(releaseJob)
-setupBuildSteps(releaseJob, true, ['releaseType=OFFICIAL', 'makeSim'], 'release')
 
 // Allow anyone to release the mutex by running a job
 def mutexJob = job("$basePath/Release Mutex") {
@@ -88,16 +102,11 @@ def setupGit(job) {
     }
 }
 
-def setupProperties(job, withParams = true) {
+def setupProperties(job) {
     job.with {
         // Note: the pull request builder plugin will fail without this property set.
         properties {
             githubProjectUrl('https://github.com/wpilibsuite/allwpilib')
-        }
-        if (withParams) {
-            parameters {
-                stringParam('docsLocation', "${System.getProperty('user.home')}/releases/development/docs/")
-            }
         }
     }
 }
@@ -116,28 +125,9 @@ def setupBuildSteps(job, usePublish, properties = null, jobName = null) {
                 }
             }
             shell('cd test-scripts && chmod +x *.sh && ./jenkins-run-tests-get-results.sh')
-            if (usePublish) {
-                gradle {
-                    tasks('publish')
-                    switches('-PjenkinsBuild')
-                    if (properties != null) {
-                        properties.each { prop ->
-                            switches("-P$prop")
-                        }
-                    }
-                }
-                shell('rm -rf $docsLocation/cpp/ && mkdir -p $docsLocation/cpp/ && cp -r ./wpilibc/build/docs/html/* $docsLocation/cpp/')
-                shell('rm -rf $docsLocation/java/ && mkdir -p $docsLocation/java/ && cp -r ./wpilibj/build/docs/javadoc/* $docsLocation/java/')
-            }
         }
         publishers {
             archiveJunit('test-reports/*.xml')
-            if (usePublish) {
-                archiveArtifacts {
-                    pattern('**/build/**/*.zip')
-                    pattern('**/build/**/*.jar')
-                }
-            }
         }
     }
 }

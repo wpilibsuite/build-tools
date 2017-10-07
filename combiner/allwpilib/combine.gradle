@@ -1,0 +1,267 @@
+def finder = new FileNameFinder()
+
+def pubVersion = file(finder.getFileNames(new File(projectDir, 'products').absolutePath, '**/outputs/version.txt').first()).text.trim()
+
+def halHeaderFile = file(finder.getFileNames(new File(projectDir, 'products').absolutePath, '**/hal-headers.zip').first())
+
+def halSourcesFile = file(finder.getFileNames(new File(projectDir, 'products').absolutePath, '**/hal-sources.zip').first())
+
+def halCppFiles = files(finder.getFileNames(new File(projectDir, 'products').absolutePath, '**/zipcpphal*-classifier-*.zip'))
+
+def halCppStaticDepFiles = files(finder.getFileNames(new File(projectDir, 'products').absolutePath, '**/zipcpphalSimStaticDeps-classifier-*.zip'))
+
+def wpilibcHeaderFile = file(finder.getFileNames(new File(projectDir, 'products').absolutePath, '**/wpilibc-headers.zip').first())
+
+def wpilibcSourcesFile = file(finder.getFileNames(new File(projectDir, 'products').absolutePath, '**/wpilibc-sources.zip').first())
+
+def wpilibcCppFiles = files(finder.getFileNames(new File(projectDir, 'products').absolutePath, '**/zipcppwpilibc-classifier-*.zip'))
+
+def wpilibcLinkerFiles = files(finder.getFileNames(new File(projectDir, 'products').absolutePath, '**/wpilibclinkscript-classifier-*.zip'))
+
+def jniStaticFiles = files(finder.getFileNames(new File(projectDir, 'products').absolutePath, '**/jniwpilibJNIStatic-classifier-*.zip'))
+
+def jniSharedFiles = files(finder.getFileNames(new File(projectDir, 'products').absolutePath, '**/jniwpilibJNIShared-classifier-*.zip'))
+
+def jniSourcesFile = file(finder.getFileNames(new File(projectDir, 'products').absolutePath, '**/wpilibJNI-sources.zip').first())
+
+def jarSources = file(finder.getFileNames(new File(projectDir, 'products').absolutePath, '**/*wpilibj-sources.jar').first())
+
+def jarJavadoc = file(finder.getFileNames(new File(projectDir, 'products').absolutePath, '**/wpilibj-javadoc.jar').first())
+
+def jar = file(finder.getFileNames(new File(projectDir, 'products').absolutePath, '**/wpilibj-javaArtifact.jar').first())
+
+apply plugin: 'maven-publish'
+
+if (!project.hasProperty('repo')) {
+    project.extensions.repo = 'development'
+}
+
+publishing {
+    repositories {
+        maven {
+            url "${System.getProperty('user.home')}/releases/maven/${project.repo}"
+        }
+    }
+}
+
+def allOutput = file('outputs')
+
+def allHalZipTask = project.tasks.create("halAllCppZip", Zip) {
+    description = 'Creates a zip with all hal cpp artifacts'
+    classifier = 'all'
+    baseName = 'hal'
+    destinationDir = allOutput
+    duplicatesStrategy = 'exclude'
+
+    halCppFiles.each {
+        from project.zipTree(it)
+    }
+}
+
+def allHalStaticDepZipTask = project.tasks.create("halAllStaticDepCppZip", Zip) {
+    description = 'Creates a zip with all hal static dep cpp artifacts'
+    classifier = 'all'
+    baseName = 'halStaticDeps'
+    destinationDir = allOutput
+    duplicatesStrategy = 'exclude'
+
+    halCppStaticDepFiles.each {
+        from project.zipTree(it)
+    }
+}
+
+def allWpilibCZipTask = project.tasks.create("wpilibcAllCppZip", Zip) {
+    description = 'Creates a zip with all wpilibc artifacts'
+    classifier = 'all'
+    baseName = 'wpilibc'
+    destinationDir = allOutput
+    duplicatesStrategy = 'exclude'
+
+    wpilibcCppFiles.each {
+        from project.zipTree(it)
+    }
+}
+
+def allWpilibCLinkScriptZipTask = project.tasks.create("wpilibcLinkScriptAllCppZip", Zip) {
+    description = 'Creates a zip with all wpilibc artifacts'
+    classifier = 'all'
+    baseName = 'wpilibcLinkScript'
+    destinationDir = allOutput
+    duplicatesStrategy = 'exclude'
+
+    wpilibcLinkerFiles.each {
+        from project.zipTree(it)
+    }
+}
+
+def allJniStaticJarTask = project.tasks.create("wpilibjJniAllStaticJar", Jar) {
+    description = 'Creates a zip with all wpilibj JNI static artifacts'
+    classifier = 'all'
+    baseName = 'wpilibJNIStatic'
+    destinationDir = allOutput
+    duplicatesStrategy = 'exclude'
+
+    jniStaticFiles.each {
+        from project.zipTree(it)
+    }
+}
+
+def allJniSharedJarTask = project.tasks.create("wpilibjJniAllSharedJar", Jar) {
+    description = 'Creates a zip with all wpilibj JNI shared artifacts'
+    classifier = 'all'
+    baseName = 'wpilibJNIShared'
+    destinationDir = allOutput
+    duplicatesStrategy = 'exclude'
+
+    jniSharedFiles.each {
+        from project.zipTree(it)
+    }
+}
+
+def javaBaseArtifactId = 'wpilibj'
+def javaArtifactGroupId = 'edu.wpi.first.wpilibj'
+
+def halBaseArtifactId = 'hal'
+def halArtifactGroupId = 'edu.wpi.first.hal'
+
+def wpilibCBaseArtifactId = 'wpilibc'
+def wpilibCArtifactGroupId = 'edu.wpi.first.wpilibc'
+
+publishing {
+    publications {
+        java(MavenPublication) {
+            artifact jar
+
+            artifact (jarJavadoc) {
+                classifier 'javadoc'
+            }
+
+            artifact (jarSources) {
+                classifier 'sources'
+            }
+
+
+            artifactId = "${javaBaseArtifactId}-java"
+            groupId javaArtifactGroupId
+            version pubVersion
+        }
+        jniShared(MavenPublication) {
+
+            artifact allJniSharedJarTask
+
+            jniSharedFiles.each { file->
+                artifact (file) {
+                    classifier = getClassifier(file)
+                }
+            }
+
+            artifact (jniSourcesFile) {
+                classifier = 'sources'
+            }
+
+            artifactId = "${javaBaseArtifactId}-jniShared"
+            groupId javaArtifactGroupId
+            version pubVersion
+        }
+
+        jni(MavenPublication) {
+
+            artifact allJniStaticJarTask
+
+            jniStaticFiles.each { file->
+                artifact (file) {
+                    classifier = getClassifier(file)
+                }
+            }
+
+            artifact (jniSourcesFile) {
+                classifier = 'sources'
+            }
+
+            artifactId = "${javaBaseArtifactId}-jni"
+            groupId javaArtifactGroupId
+            version pubVersion
+        }
+
+
+        hal(MavenPublication) {
+            artifact allHalZipTask
+
+            halCppFiles.each { file->
+                artifact (file) {
+                    classifier = getClassifier(file)
+                }
+            }
+
+            artifact (halSourcesFile) {
+                classifier = 'sources'
+            }
+
+            artifact (halHeaderFile) {
+                classifier = 'headers'
+            }
+
+            artifactId = "${halBaseArtifactId}"
+            groupId halArtifactGroupId
+            version pubVersion
+        }
+
+        halStaticDeps(MavenPublication) {
+            artifact allHalStaticDepZipTask
+
+            halCppStaticDepFiles.each { file->
+                artifact (file) {
+                    classifier = getClassifier(file)
+                }
+            }
+
+            artifact (halSourcesFile) {
+                classifier = 'sources'
+            }
+
+            artifact (halHeaderFile) {
+                classifier = 'headers'
+            }
+
+            artifactId = "${halBaseArtifactId}StaticDeps"
+            groupId halArtifactGroupId
+            version pubVersion
+        }
+
+        wpilibc(MavenPublication) {
+            artifact allWpilibCZipTask
+
+            wpilibcCppFiles.each { file->
+                artifact (file) {
+                    classifier = getClassifier(file)
+                }
+            }
+
+            artifact (wpilibcSourcesFile) {
+                classifier = 'sources'
+            }
+
+            artifact (wpilibcHeaderFile) {
+                classifier = 'headers'
+            }
+
+            artifactId = "${wpilibcBaseArtifactId}"
+            groupId wpilibcArtifactGroupId
+            version pubVersion
+        }
+
+        wpilibcLinkScripts(MavenPublication) {
+            artifact allWpilibCLinkScriptZipTask
+
+            wpilibcLinkerFiles.each { file->
+                artifact (file) {
+                    classifier = getClassifier(file)
+                }
+            }
+
+            artifactId = "${wpilibcBaseArtifactId}-linkscripts"
+            groupId wpilibcArtifactGroupId
+            version pubVersion
+        }
+    }
+}
