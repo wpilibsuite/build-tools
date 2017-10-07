@@ -12,7 +12,7 @@ folder(basePath)
             }
         }
     }
-    setupProperties(prJob, false)
+    setupProperties(prJob)
     setupPrJob(prJob, platform)
 }
 
