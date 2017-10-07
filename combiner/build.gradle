@@ -16,6 +16,6 @@ if (project.hasProperty('cscore')) {
     apply from: 'cscore/combine.gradle'
 }
 
-if (project.hasPropery('allwpilib')) {
+if (project.hasProperty('allwpilib')) {
     apply from: 'allwpilib/combine.gradle'
 }
