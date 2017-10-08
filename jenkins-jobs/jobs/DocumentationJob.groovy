@@ -77,15 +77,15 @@ def setupBuildSteps(job, doPublish, properties = null) {
                     }
                 }
             }
+            if (doPublish) {
+                shell('rm -rf $docsLocation/cpp/ && mkdir -p $docsLocation/cpp/ && cp -r ./build/docs/doxygen/html/* $docsLocation/cpp/')
+                shell('rm -rf $docsLocation/java/ && mkdir -p $docsLocation/java/ && cp -r ./build/docs/javadoc/* $docsLocation/java/')
+            }
         }
         publishers {
             archiveArtifacts {
                 pattern('build/*Docs.zip')
             }
-        }
-        if (doPublish) {
-            shell('rm -rf $docsLocation/cpp/ && mkdir -p $docsLocation/cpp/ && cp -r ./build/docs/doxygen/html/* $docsLocation/cpp/')
-            shell('rm -rf $docsLocation/java/ && mkdir -p $docsLocation/java/ && cp -r ./build/docs/javadoc/* $docsLocation/java/')
         }
     }
 }
