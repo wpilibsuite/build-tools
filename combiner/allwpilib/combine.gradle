@@ -18,9 +18,9 @@ def wpilibcCppFiles = files(finder.getFileNames(new File(projectDir, 'products')
 
 def wpilibcLinkerFiles = files(finder.getFileNames(new File(projectDir, 'products').absolutePath, '**/wpilibclinkscript-classifier-*.zip'))
 
-def jniStaticFiles = files(finder.getFileNames(new File(projectDir, 'products').absolutePath, '**/jniwpilibJNIStatic-classifier-*.zip'))
+def jniStaticFiles = files(finder.getFileNames(new File(projectDir, 'products').absolutePath, '**/jniwpilibJNIStatic-classifier-*.jar'))
 
-def jniSharedFiles = files(finder.getFileNames(new File(projectDir, 'products').absolutePath, '**/jniwpilibJNIShared-classifier-*.zip'))
+def jniSharedFiles = files(finder.getFileNames(new File(projectDir, 'products').absolutePath, '**/jniwpilibJNIShared-classifier-*.jar'))
 
 def jniSourcesFile = file(finder.getFileNames(new File(projectDir, 'products').absolutePath, '**/wpilibJNI-sources.zip').first())
 
