@@ -26,7 +26,7 @@ stage('build') {
             ws("workspace/${env.JOB_NAME}/arm") {
                 git poll: true, url: 'https://github.com/wpilibsuite/allwpilib.git'
                 sh './gradlew clean build -PjenkinsBuild -PonlyAthena -PreleaseBuild -PbuildAll -PbuildHalStaticDeps --console=plain --stacktrace --refresh-dependencies'
-                stash includes: '*/build/libs/**/*.jar, */build/outputs/**/*.*, outputs/**/*.*', name: 'arm'
+                stash includes: '*/build/libs/**/*.jar, */build/outputs/**/*.*, */outputs/**/*.*', name: 'arm'
             }
         }
     }
