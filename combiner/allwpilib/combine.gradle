@@ -6,9 +6,9 @@ def halHeaderFile = file(finder.getFileNames(new File(projectDir, 'products').ab
 
 def halSourcesFile = file(finder.getFileNames(new File(projectDir, 'products').absolutePath, '**/hal-sources.zip').first())
 
-def halCppFiles = files(finder.getFileNames(new File(projectDir, 'products').absolutePath, '**/zipcpphal*-classifier-*.zip'))
-
 def halCppStaticDepFiles = files(finder.getFileNames(new File(projectDir, 'products').absolutePath, '**/zipcpphalSimStaticDeps-classifier-*.zip'))
+
+def halCppFiles = files(finder.getFileNames(new File(projectDir, 'products').absolutePath, '**/zipcpphal*-classifier-*.zip')).minus(halCppStaticDepFiles)
 
 def wpilibcHeaderFile = file(finder.getFileNames(new File(projectDir, 'products').absolutePath, '**/wpilibc-headers.zip').first())
 
