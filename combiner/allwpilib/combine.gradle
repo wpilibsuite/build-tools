@@ -10,6 +10,10 @@ def halCppStaticDepFiles = files(finder.getFileNames(new File(projectDir, 'produ
 
 def halCppFiles = files(finder.getFileNames(new File(projectDir, 'products').absolutePath, '**/zipcpphal*-classifier-*.zip')).minus(halCppStaticDepFiles)
 
+def niHeaderFiles = file(finder.getFileNames(new File(projectDir, 'products').absolutePath, '**/nilibraries-classifier-headers.zip').first())
+
+def niSharedFiles = file(finder.getFileNames(new File(projectDir, 'products').absolutePath, '**/nilibraries-classifier-linuxathena.zip').first())
+
 def wpilibcHeaderFile = file(finder.getFileNames(new File(projectDir, 'products').absolutePath, '**/wpilibc-headers.zip').first())
 
 def wpilibcSourcesFile = file(finder.getFileNames(new File(projectDir, 'products').absolutePath, '**/wpilibc-sources.zip').first())
@@ -127,6 +131,10 @@ def halArtifactGroupId = 'edu.wpi.first.hal'
 def wpilibCBaseArtifactId = 'wpilibc'
 def wpilibCArtifactGroupId = 'edu.wpi.first.wpilibc'
 
+def niBaseArtifactId = 'ni-libraries'
+def niArtifactGroupId = 'edu.wpi.first.ni-libraries'
+
+
 publishing {
     publications {
         java(MavenPublication) {
@@ -225,6 +233,20 @@ publishing {
 
             artifactId = "${halBaseArtifactId}StaticDeps"
             groupId halArtifactGroupId
+            version pubVersion
+        }
+
+        nilibraries(MavenPublication) {
+            artifact (niHeaderFiles) {
+                classifier = 'headers'
+            }
+
+            artifact (niSharedFiles) {
+                classifier = 'linuxathena'
+            }
+
+            artifactId = niBaseArtifactId
+            groupId niArtifactGroupId
             version pubVersion
         }
 
