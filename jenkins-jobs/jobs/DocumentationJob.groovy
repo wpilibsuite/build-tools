@@ -20,6 +20,9 @@ def prJob = job("$basePath/Documentation - PR") {
     }
 }
 
+setupProperties(prJob, false, 'pr')
+setupBuildSteps(prJob, false, false)
+
 
 def developmentJob = job("$basePath/Documentation - Development") {
     triggers {
@@ -28,14 +31,20 @@ def developmentJob = job("$basePath/Documentation - Development") {
 }
 
 setupGit(developmentJob)
-setupProperties(developmentJob)
+setupProperties(developmentJob, true, 'development')
 setupBuildSteps(developmentJob, false, true)
 
 def releaseJob = job("$basePath/Documentation - Release")
 
 setupGit(releaseJob)
-setupProperties(releaseJob)
+setupProperties(releaseJob, true, 'release')
 setupBuildSteps(releaseJob, true, true, ['releaseType=OFFICIAL'])
+
+def betaJob = job("$basePath/Documentation - Beta")
+
+setupGit(betaJob)
+setupProperties(betaJob, true, 'beta')
+setupBuildSteps(betaJob, true, true, ['releaseType=OFFICIAL'])
 
 def setupGit(job) {
     job.with {
@@ -50,7 +59,7 @@ def setupGit(job) {
     }
 }
 
-def setupProperties(job, withParams = true) {
+def setupProperties(job, withParams, paramsRepo) {
     job.with {
         // Note: The pull request builder plugin will fail without this property set.
         properties {
@@ -58,7 +67,7 @@ def setupProperties(job, withParams = true) {
         }
         if (withParams) {
             parameters {
-                stringParam('docsLocation', "${System.getProperty('user.home')}/releases/development/docs/")
+                stringParam('docsLocation', "${System.getProperty('user.home')}/releases/${paramsRepo}/docs/")
             }
         }
     }
