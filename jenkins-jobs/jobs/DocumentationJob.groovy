@@ -29,13 +29,13 @@ def developmentJob = job("$basePath/Documentation - Development") {
 
 setupGit(developmentJob)
 setupProperties(developmentJob)
-setupBuildSteps(developmentJob, false)
+setupBuildSteps(developmentJob, false, true)
 
 def releaseJob = job("$basePath/Documentation - Release")
 
 setupGit(releaseJob)
 setupProperties(releaseJob)
-setupBuildSteps(releaseJob, true, ['releaseType=OFFICIAL'])
+setupBuildSteps(releaseJob, true, true, ['releaseType=OFFICIAL'])
 
 def setupGit(job) {
     job.with {
@@ -64,12 +64,15 @@ def setupProperties(job, withParams = true) {
     }
 }
 
-def setupBuildSteps(job, doPublish, properties = null) {
+def setupBuildSteps(job, doWebPublish, doMavenPublish,  properties = null) {
     job.with {
         steps {
             gradle {
                 tasks('clean')
                 tasks('build')
+                if (doMavenPublish) {
+                    tasks('publish')
+                }
                 switches('-PjenkinsBuild')
                 if (properties != null) {
                     properties.each { prop ->
@@ -77,7 +80,7 @@ def setupBuildSteps(job, doPublish, properties = null) {
                     }
                 }
             }
-            if (doPublish) {
+            if (doWebPublish) {
                 shell('rm -rf $docsLocation/cpp/ && mkdir -p $docsLocation/cpp/ && cp -r ./build/docs/doxygen/html/* $docsLocation/cpp/')
                 shell('rm -rf $docsLocation/java/ && mkdir -p $docsLocation/java/ && cp -r ./build/docs/javadoc/* $docsLocation/java/')
             }
