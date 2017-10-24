@@ -37,7 +37,7 @@ def developmentJob = job("$basePath/RobotBuilder - Development") {
 
 setupGit(developmentJob)
 setupProperties(developmentJob)
-setupXvfb(prJob)
+setupXvfb(developmentJob)
 setupBuildSteps(developmentJob, true)
 
 def releaseJob = job("$basePath/RobotBuilder - Release")
