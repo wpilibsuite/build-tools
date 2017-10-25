@@ -19,7 +19,7 @@ folder(basePath)
 def athenaPrJob = job("$basePath/WPILib - PR Athena")
 setupPrJob(athenaPrJob, 'Athena')
 setupProperties(athenaPrJob)
-setupBuildSteps(athenaPrJob, false, ['releaseBuild'])
+setupBuildSteps(athenaPrJob, false, ['releaseBuild', 'onlyAthena'])
 
 def developmentJob = pipelineJob("$basePath/WPILib - Development2") {
     definition {
