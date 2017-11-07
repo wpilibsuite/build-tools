@@ -297,28 +297,28 @@ publishing {
         wpilibcExamples(MavenPublication) {
             artifact wpilibcExamplesZip
 
-            artifactId = "${wpilibCBaseArtifactId}-examples"
+            artifactId = "examples"
             groupId wpilibCArtifactGroupId
             version pubVersion
         }
         wpilibcTemplates(MavenPublication) {
             artifact wpilibcTemplatesZip
 
-            artifactId = "${wpilibCBaseArtifactId}-templates"
+            artifactId = "templates"
             groupId wpilibCArtifactGroupId
             version pubVersion
         }
         wpilibjExamples(MavenPublication) {
             artifact wpilibjExamplesZip
 
-            artifactId = "${javaBaseArtifactId}-examples"
+            artifactId = "examples"
             groupId javaArtifactGroupId
             version pubVersion
         }
         wpilibjTemplates(MavenPublication) {
             artifact wpilibjTemplatesZip
 
-            artifactId = "${javaBaseArtifactId}-templates"
+            artifactId = "templates"
             groupId javaArtifactGroupId
             version pubVersion
         }
