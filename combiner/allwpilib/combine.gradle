@@ -34,6 +34,14 @@ def jarJavadoc = file(finder.getFileNames(new File(projectDir, 'products').absol
 
 def jar = file(finder.getFileNames(new File(projectDir, 'products').absolutePath, '**/wpilibj-javaArtifact.jar').first())
 
+def wpilibcExamplesZip = file(finder.getFileNames(new File(projectDir, 'products').absolutePath, '**/wpilibj-examples.zip').first())
+
+def wpilibcTemplatesZip = file(finder.getFileNames(new File(projectDir, 'products').absolutePath, '**/wpilibc-templates.zip').first())
+
+def wpilibjExamplesZip = file(finder.getFileNames(new File(projectDir, 'products').absolutePath, '**/wpilibj-examples.zip').first())
+
+def wpilibjTemplatesZip = file(finder.getFileNames(new File(projectDir, 'products').absolutePath, '**/wpilibj-templates.zip').first())
+
 apply plugin: 'maven-publish'
 
 if (!project.hasProperty('repo')) {
@@ -283,6 +291,35 @@ publishing {
 
             artifactId = "${wpilibCBaseArtifactId}-linkscripts"
             groupId wpilibCArtifactGroupId
+            version pubVersion
+        }
+
+        wpilibcExamples(MavenPublication) {
+            artifact wpilibcExamplesZip
+
+            artifactId = "${wpilibCBaseArtifactId}-examples"
+            groupId wpilibCArtifactGroupId
+            version pubVersion
+        }
+        wpilibcTemplates(MavenPublication) {
+            artifact wpilibcTemplatesZip
+
+            artifactId = "${wpilibCBaseArtifactId}-templates"
+            groupId wpilibCArtifactGroupId
+            version pubVersion
+        }
+        wpilibjExamples(MavenPublication) {
+            artifact wpilibjExamplesZip
+
+            artifactId = "${javaBaseArtifactId}-examples"
+            groupId javaArtifactGroupId
+            version pubVersion
+        }
+        wpilibjTemplates(MavenPublication) {
+            artifact wpilibjTemplatesZip
+
+            artifactId = "${javaBaseArtifactId}-templates"
+            groupId javaArtifactGroupId
             version pubVersion
         }
     }
