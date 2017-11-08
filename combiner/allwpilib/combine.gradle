@@ -34,7 +34,7 @@ def jarJavadoc = file(finder.getFileNames(new File(projectDir, 'products').absol
 
 def jar = file(finder.getFileNames(new File(projectDir, 'products').absolutePath, '**/wpilibj-javaArtifact.jar').first())
 
-def wpilibcExamplesZip = file(finder.getFileNames(new File(projectDir, 'products').absolutePath, '**/wpilibj-examples.zip').first())
+def wpilibcExamplesZip = file(finder.getFileNames(new File(projectDir, 'products').absolutePath, '**/wpilibc-examples.zip').first())
 
 def wpilibcTemplatesZip = file(finder.getFileNames(new File(projectDir, 'products').absolutePath, '**/wpilibc-templates.zip').first())
 
