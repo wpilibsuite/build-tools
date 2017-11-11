@@ -8,7 +8,7 @@ def halSourcesFile = file(finder.getFileNames(new File(projectDir, 'products').a
 
 def halCppStaticDepFiles = files(finder.getFileNames(new File(projectDir, 'products').absolutePath, '**/zipcpphalSimStaticDeps-classifier-*.zip'))
 
-def halCppFiles = files(finder.getFileNames(new File(projectDir, 'products').absolutePath, '**/zipcpphal*-classifier-*.zip')).minus(halCppStaticDepFiles)
+def halCppFiles = files(finder.getFileNames(new File(projectDir, 'products').absolutePath, '**/zipcpphal-classifier-*.zip')).minus(halCppStaticDepFiles)
 
 def niHeaderFiles = file(finder.getFileNames(new File(projectDir, 'products').absolutePath, '**/nilibraries-classifier-headers.zip').first())
 
