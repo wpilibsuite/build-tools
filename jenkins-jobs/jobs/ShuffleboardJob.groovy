@@ -68,6 +68,11 @@ def setupProperties(job) {
 
 def setupBuildSteps(job, usePublish, properties = null) {
     job.with {
+        wrappers {
+            xvfb('default') {
+                screen('1920x1080x24')
+            }
+        }
         steps {
             gradle {
                 tasks('clean')

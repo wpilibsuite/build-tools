@@ -41,6 +41,7 @@ dependencies {
     testCompile "org.jenkins-ci.plugins:job-dsl:${jobDslVersion}@jar"
     testCompile 'org.jenkins-ci.plugins:structs:1.5@jar'
     testCompile 'org.jenkins-ci.plugins:cloudbees-folder:5.1@jar'
+    testCompile 'org.jenkins-ci.plugins:xvfb:1.1.3@jar'
 
     // plugins to install in test instance
     testPlugins 'org.jenkins-ci.plugins:ghprb:1.31.4'
