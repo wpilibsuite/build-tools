@@ -63,6 +63,10 @@ def setupProperties(job) {
         properties {
             githubProjectUrl('https://github.com/wpilibsuite/SmartDashboard')
         }
+        logRotator {
+            numToKeep(50)
+            artifactNumToKeep(10)
+        }
     }
 }
 

@@ -82,6 +82,10 @@ def setupProperties(job) {
         properties {
             githubProjectUrl('https://github.com/wpilibsuite/ntcore')
         }
+        logRotator {
+            numToKeep(50)
+            artifactNumToKeep(10)
+        }
     }
 }
 

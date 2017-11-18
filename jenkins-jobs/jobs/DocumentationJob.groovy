@@ -70,6 +70,10 @@ def setupProperties(job, withParams, paramsRepo) {
                 stringParam('docsLocation', "${System.getProperty('user.home')}/releases/${paramsRepo}/docs/")
             }
         }
+        logRotator {
+            numToKeep(50)
+            artifactNumToKeep(10)
+        }
     }
 }
 

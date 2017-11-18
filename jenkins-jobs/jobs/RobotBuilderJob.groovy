@@ -66,6 +66,10 @@ def setupProperties(job) {
         properties {
             githubProjectUrl('https://github.com/wpilibsuite/RobotBuilder')
         }
+        logRotator {
+            numToKeep(50)
+            artifactNumToKeep(10)
+        }
     }
 }
 

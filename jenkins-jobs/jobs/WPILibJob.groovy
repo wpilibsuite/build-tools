@@ -108,6 +108,10 @@ def setupProperties(job) {
         properties {
             githubProjectUrl('https://github.com/wpilibsuite/allwpilib')
         }
+        logRotator {
+            numToKeep(50)
+            artifactNumToKeep(10)
+        }
     }
 }
 
