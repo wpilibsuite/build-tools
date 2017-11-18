@@ -57,7 +57,7 @@ setupProperties(releaseJob)
 // Allow anyone to release the mutex by running a job
 def mutexJob = job("$basePath/Release Mutex") {
     steps {
-        shell('ssh -t admin@roborio-190-frc.local /usr/local/frc/bin/teststand give --name=`whoami`')
+        shell('ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -t admin@roborio-190-frc.local /usr/local/frc/bin/teststand give --name=`whoami`')
     }
 
     scm {
