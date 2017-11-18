@@ -21,7 +21,7 @@ setupPrJob(athenaPrJob, 'Athena')
 setupProperties(athenaPrJob)
 setupBuildSteps(athenaPrJob, false, ['releaseBuild', 'onlyAthena'])
 
-def developmentJob = pipelineJob("$basePath/WPILib - Development2") {
+def developmentJob = pipelineJob("$basePath/WPILib - Development") {
     definition {
         cps {
             try {
@@ -39,7 +39,7 @@ def developmentJob = pipelineJob("$basePath/WPILib - Development2") {
 
 setupProperties(developmentJob)
 
-def releaseJob = pipelineJob("$basePath/WPILib - Release2") {
+def releaseJob = pipelineJob("$basePath/WPILib - Release") {
     definition {
         cps {
             try {
