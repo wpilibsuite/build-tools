@@ -9,6 +9,10 @@ folder(basePath)
                 tasks('clean')
                 tasks('build')
                 switches('-PjenkinsBuild -PskipAthena -PreleaseBuild -PbuildAll --console=plain --stacktrace --refresh-dependencies')
+                configure {
+                    passAllAsProjectProperties = false
+                    passAllAsSystemProperties = false
+                }
             }
         }
     }
