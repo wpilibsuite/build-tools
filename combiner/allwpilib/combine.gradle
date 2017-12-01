@@ -42,6 +42,14 @@ def wpilibjExamplesZip = file(finder.getFileNames(new File(projectDir, 'products
 
 def wpilibjTemplatesZip = file(finder.getFileNames(new File(projectDir, 'products').absolutePath, '**/wpilibj-templates.zip').first())
 
+def halsimPrintZips = files(finder.getFileNames(new File(projectDir, 'products').absolutePath, '**/zipcpphalsim_print-classifier-*.zip'))
+
+def halsimGyroAccelHeaderFile = file(finder.getFileNames(new File(projectDir, 'products').absolutePath, '**/halsim-adx_gyro_accelerometer-headers.zip').first())
+
+def halsimGyroAccelSourcesFile = file(finder.getFileNames(new File(projectDir, 'products').absolutePath, '**/halsim-adx_gyro_accelerometer-sources.zip').first())
+
+def halsimGyroAccelZips = files(finder.getFileNames(new File(projectDir, 'products').absolutePath, '**/zipcpphalsim_adx_gyro_accelerometer-classifier-*.zip'))
+
 apply plugin: 'maven-publish'
 
 if (!project.hasProperty('repo')) {
@@ -78,6 +86,30 @@ def allHalStaticDepZipTask = project.tasks.create("halAllStaticDepCppZip", Zip) 
     duplicatesStrategy = 'exclude'
 
     halCppStaticDepFiles.each {
+        from project.zipTree(it)
+    }
+}
+
+def allHalSimPrintZipTask = project.tasks.create('halSimAllPrintCppZip', Zip) {
+    description = 'Creates a zip with all hal sim print artifacts'
+    classifier = 'all'
+    baseName = 'halsim-print'
+    destinationDir = allOutput
+    duplicatesStrategy = 'exclude'
+
+    halsimPrintZips.each {
+        from project.zipTree(it)
+    }
+}
+
+def allHalSimGyroAccelZipTask = project.tasks.create('halSimAllGyroAccelCppZip', Zip) {
+    description = 'Creates a zip with all hal sim Gyro Accelerometer artifacts'
+    classifier = 'all'
+    baseName = 'halsim-adx_gyro_accelerometer'
+    destinationDir = allOutput
+    duplicatesStrategy = 'exclude'
+
+    halsimGyroAccelZips.each {
         from project.zipTree(it)
     }
 }
@@ -241,6 +273,42 @@ publishing {
 
             artifactId = "${halBaseArtifactId}StaticDeps"
             groupId halArtifactGroupId
+            version pubVersion
+        }
+
+        halSimPrint(MavenPublication) {
+            artifact allHalSimPrintZipTask
+
+            halsimPrintZips.each { file->
+                artifact(file) {
+                    classifier = getClassifier(file)
+                }
+            }
+
+            artifactId = 'halsim-print'
+            groupId 'edu.wpi.first.halsim'
+            version pubVersion
+        }
+
+        halSimGyroAccel(MavenPublication) {
+            artifact allHalSimGyroAccelZipTask
+
+            halsimGyroAccelZips.each { file->
+                artifact(file) {
+                    classifier = getClassifier(file)
+                }
+            }
+
+            artifact (halsimGyroAccelHeaderFile) {
+                classifier = 'headers'
+            }
+
+            artifact (halsimGyroAccelSourcesFile) {
+                classifier 'sources'
+            }
+
+            artifactId 'halsim-adx_gyro_accelerometer'
+            groupId 'edu.wpi.first.halsim'
             version pubVersion
         }
 
