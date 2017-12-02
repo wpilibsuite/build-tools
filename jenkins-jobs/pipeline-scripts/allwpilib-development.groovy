@@ -45,9 +45,10 @@ stage('combine') {
                 unstash 'windows'
                 unstash 'arm'
             }
+            archiveArtifacts 'combiner/products/**/*.zip, combiner/products/**/*.jar, combiner/outputs/**/*.*'
             sh 'chmod +x ./combiner/gradlew'
             sh 'cd ./combiner && ./gradlew publish -Pallwpilib'
-            archiveArtifacts 'combiner/products/**/*.zip, combiner/products/**/*.jar, combiner/outputs/**/*.*'
+
         }
     }
 }
