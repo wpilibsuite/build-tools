@@ -8,8 +8,6 @@ def halSourcesFile = file(finder.getFileNames(new File(projectDir, 'products').a
 
 def halCppStaticDepFiles = files(finder.getFileNames(new File(projectDir, 'products').absolutePath, '**/zipcpphalSimStaticDeps-classifier-*.zip'))
 
-def halCppFiles = files(finder.getFileNames(new File(projectDir, 'products').absolutePath, '**/zipcpphal*-classifier-*.zip')).minus(halCppStaticDepFiles)
-
 def niHeaderFiles = file(finder.getFileNames(new File(projectDir, 'products').absolutePath, '**/nilibraries-classifier-headers.zip').first())
 
 def niSharedFiles = file(finder.getFileNames(new File(projectDir, 'products').absolutePath, '**/nilibraries-classifier-linuxathena.zip').first())
@@ -49,6 +47,8 @@ def halsimGyroAccelHeaderFile = file(finder.getFileNames(new File(projectDir, 'p
 def halsimGyroAccelSourcesFile = file(finder.getFileNames(new File(projectDir, 'products').absolutePath, '**/halsim-adx_gyro_accelerometer-sources.zip').first())
 
 def halsimGyroAccelZips = files(finder.getFileNames(new File(projectDir, 'products').absolutePath, '**/zipcpphalsim_adx_gyro_accelerometer-classifier-*.zip'))
+
+def halCppFiles = files(finder.getFileNames(new File(projectDir, 'products').absolutePath, '**/zipcpphal*-classifier-*.zip')).minus(halCppStaticDepFiles).minus(halsimPrintZips).minus(halsimGyroAccelZips)
 
 apply plugin: 'maven-publish'
 
