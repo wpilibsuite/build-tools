@@ -48,7 +48,19 @@ def halsimGyroAccelSourcesFile = file(finder.getFileNames(new File(projectDir, '
 
 def halsimGyroAccelZips = files(finder.getFileNames(new File(projectDir, 'products').absolutePath, '**/zipcpphalsim_adx_gyro_accelerometer-classifier-*.zip'))
 
-def halCppFiles = files(finder.getFileNames(new File(projectDir, 'products').absolutePath, '**/zipcpphal*-classifier-*.zip')).minus(halCppStaticDepFiles).minus(halsimPrintZips).minus(halsimGyroAccelZips)
+def halsimDsNtHeaderFile = file(finder.getFileNames(new File(projectDir, 'products').absolutePath, '**/halsim-ds-nt-headers.zip').first())
+
+def halsimDsNtSourcesFile = file(finder.getFileNames(new File(projectDir, 'products').absolutePath, '**/halsim-ds-nt-sources.zip').first())
+
+def halsimDsNtZips = files(finder.getFileNames(new File(projectDir, 'products').absolutePath, '**/zipcpphalsim_ds_nt-classifier-*.zip'))
+
+def halsimLowFiHeaderFile = file(finder.getFileNames(new File(projectDir, 'products').absolutePath, '**/halsim-lowfi-headers.zip').first())
+
+def halsimLowFiSourcesFile = file(finder.getFileNames(new File(projectDir, 'products').absolutePath, '**/halsim-lowfi-sources.zip').first())
+
+def halsimLowFiZips = files(finder.getFileNames(new File(projectDir, 'products').absolutePath, '**/zipcpphalsim_lowfi-classifier-*.zip'))
+
+def halCppFiles = files(finder.getFileNames(new File(projectDir, 'products').absolutePath, '**/zipcpphal*-classifier-*.zip')).minus(halCppStaticDepFiles).minus(halsimPrintZips).minus(halsimGyroAccelZips).minus(halsimDsNtZips).minus(halsimLowFiZips)
 
 apply plugin: 'maven-publish'
 
@@ -110,6 +122,30 @@ def allHalSimGyroAccelZipTask = project.tasks.create('halSimAllGyroAccelCppZip',
     duplicatesStrategy = 'exclude'
 
     halsimGyroAccelZips.each {
+        from project.zipTree(it)
+    }
+}
+
+def allHalSimDsNtZipTask = project.tasks.create('halSimAllDsNtCppZip', Zip) {
+    description = 'Creates a zip with all hal sim DS NT artifacts'
+    classifier = 'all'
+    baseName = 'halsim-ds-nt'
+    destinationDir = allOutput
+    duplicatesStrategy = 'exclude'
+
+    halsimDsNtZips.each {
+        from project.zipTree(it)
+    }
+}
+
+def allHalSimLowFiZipTask = project.tasks.create('halSimAllLowFiCppZip', Zip) {
+    description = 'Creates a zip with all hal sim LowFi artifacts'
+    classifier = 'all'
+    baseName = 'halsim-lowfi'
+    destinationDir = allOutput
+    duplicatesStrategy = 'exclude'
+
+    halsimLowFiZips.each {
         from project.zipTree(it)
     }
 }
@@ -308,6 +344,50 @@ publishing {
             }
 
             artifactId 'halsim-adx_gyro_accelerometer'
+            groupId 'edu.wpi.first.halsim'
+            version pubVersion
+        }
+
+        halSimDsNt(MavenPublication) {
+            artifact allHalSimDsNtZipTask
+
+            halsimDsNtZips.each { file->
+                artifact(file) {
+                    classifier = getClassifier(file)
+                }
+            }
+
+            artifact (halsimDsNtHeaderFile) {
+                classifier = 'headers'
+            }
+
+            artifact (halsimDsNtSourcesFile) {
+                classifier 'sources'
+            }
+
+            artifactId 'halsim-ds-nt'
+            groupId 'edu.wpi.first.halsim'
+            version pubVersion
+        }
+
+        halSimLowFi(MavenPublication) {
+            artifact allHalSimDsNtZipTask
+
+            halsimLowFiZips.each { file->
+                artifact(file) {
+                    classifier = getClassifier(file)
+                }
+            }
+
+            artifact (halsimLowFiHeaderFile) {
+                classifier = 'headers'
+            }
+
+            artifact (halsimLowFiSourcesFile) {
+                classifier 'sources'
+            }
+
+            artifactId 'halsim-lowfi'
             groupId 'edu.wpi.first.halsim'
             version pubVersion
         }
