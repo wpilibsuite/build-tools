@@ -77,6 +77,29 @@ def setupProperties(job, withParams, paramsRepo) {
     }
 }
 
+/**
+ * Generates a shell command for nuking a docs directory and copying the most up-to-date docs
+ * into it. This assumes that the documentation files are located in "./build/docs".
+ *
+ * @param artifact the artifact to copy the docs for (eg "java", "cpp", "shuffleboard/api")
+ * @param docFormat the format string that matches the documentation files to copy, relative to the
+ *                  artifact's root documentation directory, eg "javadoc/*", "doxygen/html/*"
+ */
+def docCopyCommand(artifact, docFormat) {
+    def dst = "$docsLocation/$artifact/"
+    return "rm -rf $dst && mkdir -p $dst && cp -r ./build/docs/$docFormat $dst"
+}
+
+/**
+ * Generates a shell command for copying shuffleboard documentation. This is a shortcut for
+ * <tt>docCopyCommand(artifact, "$artifact/javadoc/*")</tt>
+ *
+ * @param artifact the shuffleboard artifact to copy the docs for
+ */
+def shuffleboardDocCopyCommand(artifact) {
+    return docCopyCommand(artifact, "$artifact/javadoc/*")
+}
+
 def setupBuildSteps(job, doWebPublish, doMavenPublish,  properties = null) {
     job.with {
         steps {
@@ -94,8 +117,12 @@ def setupBuildSteps(job, doWebPublish, doMavenPublish,  properties = null) {
                 }
             }
             if (doWebPublish) {
-                shell('rm -rf $docsLocation/cpp/ && mkdir -p $docsLocation/cpp/ && cp -r ./build/docs/doxygen/html/* $docsLocation/cpp/')
-                shell('rm -rf $docsLocation/java/ && mkdir -p $docsLocation/java/ && cp -r ./build/docs/javadoc/* $docsLocation/java/')
+                shell(docCopyCommand("cpp", "doxygen/html/*"))
+                shell(docCopyCommand("java", "javadoc/*"))
+                shell(shuffleboardDocCopyCommand("shuffleboard/api"))
+                shell(shuffleboardDocCopyCommand("shuffleboard/plugin/base"))
+                shell(shuffleboardDocCopyCommand("shuffleboard/plugin/networktables"))
+                shell(shuffleboardDocCopyCommand("shuffleboard/plugin/cameraserver"))
             }
         }
         publishers {
