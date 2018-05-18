@@ -1,66 +1,5 @@
-def finder = new FileNameFinder()
-
-def pubVersion = file(finder.getFileNames(new File(projectDir, 'products').absolutePath, '**/outputs/version.txt').first()).text.trim()
-
-def halHeaderFile = file(finder.getFileNames(new File(projectDir, 'products').absolutePath, '**/hal-headers.zip').first())
-
-def halSourcesFile = file(finder.getFileNames(new File(projectDir, 'products').absolutePath, '**/hal-sources.zip').first())
-
-def halCppStaticDepFiles = files(finder.getFileNames(new File(projectDir, 'products').absolutePath, '**/zipcpphalSimStaticDeps-classifier-*.zip'))
-
-def niHeaderFiles = file(finder.getFileNames(new File(projectDir, 'products').absolutePath, '**/nilibraries-classifier-headers.zip').first())
-
-def niSharedFiles = file(finder.getFileNames(new File(projectDir, 'products').absolutePath, '**/nilibraries-classifier-linuxathena.zip').first())
-
-def wpilibcHeaderFile = file(finder.getFileNames(new File(projectDir, 'products').absolutePath, '**/wpilibc-headers.zip').first())
-
-def wpilibcSourcesFile = file(finder.getFileNames(new File(projectDir, 'products').absolutePath, '**/wpilibc-sources.zip').first())
-
-def wpilibcCppFiles = files(finder.getFileNames(new File(projectDir, 'products').absolutePath, '**/zipcppwpilibc-classifier-*.zip'))
-
-def wpilibcLinkerFiles = files(finder.getFileNames(new File(projectDir, 'products').absolutePath, '**/wpilibclinkscript-classifier-*.zip'))
-
-def jniStaticFiles = files(finder.getFileNames(new File(projectDir, 'products').absolutePath, '**/jniwpilibJNIStatic-classifier-*.jar'))
-
-def jniSharedFiles = files(finder.getFileNames(new File(projectDir, 'products').absolutePath, '**/jniwpilibJNIShared-classifier-*.jar'))
-
-def jniSourcesFile = file(finder.getFileNames(new File(projectDir, 'products').absolutePath, '**/wpilibJNI-sources.zip').first())
-
-def jarSources = file(finder.getFileNames(new File(projectDir, 'products').absolutePath, '**/*wpilibj-sources.jar').first())
-
-def jarJavadoc = file(finder.getFileNames(new File(projectDir, 'products').absolutePath, '**/wpilibj-javadoc.jar').first())
-
-def jar = file(finder.getFileNames(new File(projectDir, 'products').absolutePath, '**/wpilibj-javaArtifact.jar').first())
-
-def wpilibcExamplesZip = file(finder.getFileNames(new File(projectDir, 'products').absolutePath, '**/wpilibc-examples.zip').first())
-
-def wpilibcTemplatesZip = file(finder.getFileNames(new File(projectDir, 'products').absolutePath, '**/wpilibc-templates.zip').first())
-
-def wpilibjExamplesZip = file(finder.getFileNames(new File(projectDir, 'products').absolutePath, '**/wpilibj-examples.zip').first())
-
-def wpilibjTemplatesZip = file(finder.getFileNames(new File(projectDir, 'products').absolutePath, '**/wpilibj-templates.zip').first())
-
-def halsimPrintZips = files(finder.getFileNames(new File(projectDir, 'products').absolutePath, '**/zipcpphalsim_print-classifier-*.zip'))
-
-def halsimGyroAccelHeaderFile = file(finder.getFileNames(new File(projectDir, 'products').absolutePath, '**/halsim-adx_gyro_accelerometer-headers.zip').first())
-
-def halsimGyroAccelSourcesFile = file(finder.getFileNames(new File(projectDir, 'products').absolutePath, '**/halsim-adx_gyro_accelerometer-sources.zip').first())
-
-def halsimGyroAccelZips = files(finder.getFileNames(new File(projectDir, 'products').absolutePath, '**/zipcpphalsim_adx_gyro_accelerometer-classifier-*.zip'))
-
-def halsimDsNtHeaderFile = file(finder.getFileNames(new File(projectDir, 'products').absolutePath, '**/halsim-ds-nt-headers.zip').first())
-
-def halsimDsNtSourcesFile = file(finder.getFileNames(new File(projectDir, 'products').absolutePath, '**/halsim-ds-nt-sources.zip').first())
-
-def halsimDsNtZips = files(finder.getFileNames(new File(projectDir, 'products').absolutePath, '**/zipcpphalsim_ds_nt-classifier-*.zip'))
-
-def halsimLowFiHeaderFile = file(finder.getFileNames(new File(projectDir, 'products').absolutePath, '**/halsim-lowfi-headers.zip').first())
-
-def halsimLowFiSourcesFile = file(finder.getFileNames(new File(projectDir, 'products').absolutePath, '**/halsim-lowfi-sources.zip').first())
-
-def halsimLowFiZips = files(finder.getFileNames(new File(projectDir, 'products').absolutePath, '**/zipcpphalsim_lowfi-classifier-*.zip'))
-
-def halCppFiles = files(finder.getFileNames(new File(projectDir, 'products').absolutePath, '**/zipcpphal*-classifier-*.zip')).minus(halCppStaticDepFiles).minus(halsimPrintZips).minus(halsimGyroAccelZips).minus(halsimDsNtZips).minus(halsimLowFiZips)
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 apply plugin: 'maven-publish'
 
@@ -78,397 +17,129 @@ publishing {
 
 def allOutput = file('outputs')
 
-def allHalZipTask = project.tasks.create("halAllCppZip", Zip) {
-    description = 'Creates a zip with all hal cpp artifacts'
-    classifier = 'all'
-    baseName = 'hal'
-    destinationDir = allOutput
-    duplicatesStrategy = 'exclude'
+def fileFinder = new FileNameFinder()
 
-    halCppFiles.each {
-        from project.zipTree(it)
-    }
+def zipFiles = files(fileFinder.getFileNames(new File(projectDir, 'products').absolutePath, '**/allOutputs/*.zip'))
+def jarFiles = files(fileFinder.getFileNames(new File(projectDir, 'products').absolutePath, '**/allOutputs/*.jar'))
+
+def allFiles = zipFiles + jarFiles
+
+def pubVersion = file(fileFinder.getFileNames(new File(projectDir, 'products').absolutePath, '**/allOutputs/version.txt').first()).text.trim()
+
+println pubVersion
+
+String regex = "([_M_]*)_GROUP_([^\\.]+)_ID_([^\\.]+)_CLS([^\\.]*)."
+Pattern pattern = Pattern.compile(regex, Pattern.MULTILINE);
+
+def groups = [:]
+
+
+
+for (File it : allFiles) {
+
+  Matcher matcher = pattern.matcher(it.name);
+
+
+  if (!matcher.find()) {
+    continue
+  }
+
+  def generateAll = matcher.group(1) == '_M_'
+
+  def groupId = matcher.group(2)
+  def artifactId = matcher.group(3)
+  def classifier = matcher.group(4)
+
+  if (!classifier.empty) {
+    classifier = classifier.substring(1)
+  }
+
+  def group = groups[groupId]
+  if (group == null) {
+    group = [:]
+    groups[groupId] = group
+  }
+
+
+  def id = group[artifactId]
+  if (id == null) {
+    id = []
+    group[artifactId] = id
+  }
+
+  id << new Tuple(classifier, generateAll, it)
+
 }
 
-def allHalStaticDepZipTask = project.tasks.create("halAllStaticDepCppZip", Zip) {
-    description = 'Creates a zip with all hal static dep cpp artifacts'
-    classifier = 'all'
-    baseName = 'halStaticDeps'
-    destinationDir = allOutput
-    duplicatesStrategy = 'exclude'
+task beforePublish() {
 
-    halCppStaticDepFiles.each {
-        from project.zipTree(it)
-    }
 }
 
-def allHalSimPrintZipTask = project.tasks.create('halSimAllPrintCppZip', Zip) {
-    description = 'Creates a zip with all hal sim print artifacts'
-    classifier = 'all'
-    baseName = 'halsim-print'
-    destinationDir = allOutput
-    duplicatesStrategy = 'exclude'
-
-    halsimPrintZips.each {
-        from project.zipTree(it)
+groups.each { key, value->
+  value.each { key2, value2->
+    def allClassifiers = []
+    def isJar = false
+    value2.each {
+      if (it.get(1)) {
+        allClassifiers << it.get(2)
+        if (it.get(2).toString().endsWith('jar')) {
+          isJar = true
+        }
+      }
     }
-}
+    if (!allClassifiers.empty) {
+      def createdTask = project.tasks.create(key + key2 + 'all', isJar ? Jar : Zip) {
+        allClassifiers.each {
+          classifier = 'all'
+          baseName = key + key2
+          destinationDir = allOutput
+          duplicatesStrategy = 'exclude'
 
-def allHalSimGyroAccelZipTask = project.tasks.create('halSimAllGyroAccelCppZip', Zip) {
-    description = 'Creates a zip with all hal sim Gyro Accelerometer artifacts'
-    classifier = 'all'
-    baseName = 'halsim-adx_gyro_accelerometer'
-    destinationDir = allOutput
-    duplicatesStrategy = 'exclude'
+          allClassifiers.each {
+            from project.zipTree(it)
+          }
+        }
+      }
+      beforePublish.dependsOn createdTask
+      value2 << new Tuple('all', false, createdTask)
 
-    halsimGyroAccelZips.each {
-        from project.zipTree(it)
     }
+  }
 }
-
-def allHalSimDsNtZipTask = project.tasks.create('halSimAllDsNtCppZip', Zip) {
-    description = 'Creates a zip with all hal sim DS NT artifacts'
-    classifier = 'all'
-    baseName = 'halsim-ds-nt'
-    destinationDir = allOutput
-    duplicatesStrategy = 'exclude'
-
-    halsimDsNtZips.each {
-        from project.zipTree(it)
-    }
-}
-
-def allHalSimLowFiZipTask = project.tasks.create('halSimAllLowFiCppZip', Zip) {
-    description = 'Creates a zip with all hal sim LowFi artifacts'
-    classifier = 'all'
-    baseName = 'halsim-lowfi'
-    destinationDir = allOutput
-    duplicatesStrategy = 'exclude'
-
-    halsimLowFiZips.each {
-        from project.zipTree(it)
-    }
-}
-
-def allWpilibCZipTask = project.tasks.create("wpilibcAllCppZip", Zip) {
-    description = 'Creates a zip with all wpilibc artifacts'
-    classifier = 'all'
-    baseName = 'wpilibc'
-    destinationDir = allOutput
-    duplicatesStrategy = 'exclude'
-
-    wpilibcCppFiles.each {
-        from project.zipTree(it)
-    }
-}
-
-def allWpilibCLinkScriptZipTask = project.tasks.create("wpilibcLinkScriptAllCppZip", Zip) {
-    description = 'Creates a zip with all wpilibc artifacts'
-    classifier = 'all'
-    baseName = 'wpilibcLinkScript'
-    destinationDir = allOutput
-    duplicatesStrategy = 'exclude'
-
-    wpilibcLinkerFiles.each {
-        from project.zipTree(it)
-    }
-}
-
-def allJniStaticJarTask = project.tasks.create("wpilibjJniAllStaticJar", Jar) {
-    description = 'Creates a zip with all wpilibj JNI static artifacts'
-    classifier = 'all'
-    baseName = 'wpilibJNIStatic'
-    destinationDir = allOutput
-    duplicatesStrategy = 'exclude'
-
-    jniStaticFiles.each {
-        from project.zipTree(it)
-    }
-}
-
-def allJniSharedJarTask = project.tasks.create("wpilibjJniAllSharedJar", Jar) {
-    description = 'Creates a zip with all wpilibj JNI shared artifacts'
-    classifier = 'all'
-    baseName = 'wpilibJNIShared'
-    destinationDir = allOutput
-    duplicatesStrategy = 'exclude'
-
-    jniSharedFiles.each {
-        from project.zipTree(it)
-    }
-}
-
-def javaBaseArtifactId = 'wpilibj'
-def javaArtifactGroupId = 'edu.wpi.first.wpilibj'
-
-def halBaseArtifactId = 'hal'
-def halArtifactGroupId = 'edu.wpi.first.hal'
-
-def wpilibCBaseArtifactId = 'wpilibc'
-def wpilibCArtifactGroupId = 'edu.wpi.first.wpilibc'
-
-def niBaseArtifactId = 'ni-libraries'
-def niArtifactGroupId = 'edu.wpi.first.ni-libraries'
-
 
 publishing {
-    publications {
-        java(MavenPublication) {
-            artifact jar
-
-            artifact (jarJavadoc) {
-                classifier 'javadoc'
+  publications {
+    groups.each { key, value->
+      println key
+      value.each { key2, value2->
+        println key2
+        "${key}${key2}"(MavenPublication) {
+          value2.each { t->
+            println t.get(2)
+            artifact (t.get(2)) {
+              if (!t.get(0).empty) {
+                classifier = t.get(0)
+              }
             }
-
-            artifact (jarSources) {
-                classifier 'sources'
-            }
-
-
-            artifactId = "${javaBaseArtifactId}-java"
-            groupId javaArtifactGroupId
-            version pubVersion
+          }
+          groupId = key.replace('_', '.')
+          artifactId = key2
+          version = pubVersion
         }
-        jniShared(MavenPublication) {
-
-            artifact allJniSharedJarTask
-
-            jniSharedFiles.each { file->
-                artifact (file) {
-                    classifier = getClassifier(file)
-                }
-            }
-
-            artifact (jniSourcesFile) {
-                classifier = 'sources'
-            }
-
-            artifactId = "${javaBaseArtifactId}-jniShared"
-            groupId javaArtifactGroupId
-            version pubVersion
+        value2.each {
+          println it.get(2)
         }
-
-        jni(MavenPublication) {
-
-            artifact allJniStaticJarTask
-
-            jniStaticFiles.each { file->
-                artifact (file) {
-                    classifier = getClassifier(file)
-                }
-            }
-
-            artifact (jniSourcesFile) {
-                classifier = 'sources'
-            }
-
-            artifactId = "${javaBaseArtifactId}-jni"
-            groupId javaArtifactGroupId
-            version pubVersion
-        }
-
-
-        hal(MavenPublication) {
-            artifact allHalZipTask
-
-            halCppFiles.each { file->
-                artifact (file) {
-                    classifier = getClassifier(file)
-                }
-            }
-
-            artifact (halSourcesFile) {
-                classifier = 'sources'
-            }
-
-            artifact (halHeaderFile) {
-                classifier = 'headers'
-            }
-
-            artifactId = "${halBaseArtifactId}"
-            groupId halArtifactGroupId
-            version pubVersion
-        }
-
-        halStaticDeps(MavenPublication) {
-            artifact allHalStaticDepZipTask
-
-            halCppStaticDepFiles.each { file->
-                artifact (file) {
-                    classifier = getClassifier(file)
-                }
-            }
-
-            artifact (halSourcesFile) {
-                classifier = 'sources'
-            }
-
-            artifact (halHeaderFile) {
-                classifier = 'headers'
-            }
-
-            artifactId = "${halBaseArtifactId}StaticDeps"
-            groupId halArtifactGroupId
-            version pubVersion
-        }
-
-        halSimPrint(MavenPublication) {
-            artifact allHalSimPrintZipTask
-
-            halsimPrintZips.each { file->
-                artifact(file) {
-                    classifier = getClassifier(file)
-                }
-            }
-
-            artifactId = 'halsim-print'
-            groupId 'edu.wpi.first.halsim'
-            version pubVersion
-        }
-
-        halSimGyroAccel(MavenPublication) {
-            artifact allHalSimGyroAccelZipTask
-
-            halsimGyroAccelZips.each { file->
-                artifact(file) {
-                    classifier = getClassifier(file)
-                }
-            }
-
-            artifact (halsimGyroAccelHeaderFile) {
-                classifier = 'headers'
-            }
-
-            artifact (halsimGyroAccelSourcesFile) {
-                classifier 'sources'
-            }
-
-            artifactId 'halsim-adx_gyro_accelerometer'
-            groupId 'edu.wpi.first.halsim'
-            version pubVersion
-        }
-
-        halSimDsNt(MavenPublication) {
-            artifact allHalSimDsNtZipTask
-
-            halsimDsNtZips.each { file->
-                artifact(file) {
-                    classifier = getClassifier(file)
-                }
-            }
-
-            artifact (halsimDsNtHeaderFile) {
-                classifier = 'headers'
-            }
-
-            artifact (halsimDsNtSourcesFile) {
-                classifier 'sources'
-            }
-
-            artifactId 'halsim-ds-nt'
-            groupId 'edu.wpi.first.halsim'
-            version pubVersion
-        }
-
-        halSimLowFi(MavenPublication) {
-            artifact allHalSimDsNtZipTask
-
-            halsimLowFiZips.each { file->
-                artifact(file) {
-                    classifier = getClassifier(file)
-                }
-            }
-
-            artifact (halsimLowFiHeaderFile) {
-                classifier = 'headers'
-            }
-
-            artifact (halsimLowFiSourcesFile) {
-                classifier 'sources'
-            }
-
-            artifactId 'halsim-lowfi'
-            groupId 'edu.wpi.first.halsim'
-            version pubVersion
-        }
-
-        nilibraries(MavenPublication) {
-            artifact (niHeaderFiles) {
-                classifier = 'headers'
-            }
-
-            artifact (niSharedFiles) {
-                classifier = 'linuxathena'
-            }
-
-            artifactId = niBaseArtifactId
-            groupId niArtifactGroupId
-            version pubVersion
-        }
-
-        wpilibc(MavenPublication) {
-            artifact allWpilibCZipTask
-
-            wpilibcCppFiles.each { file->
-                artifact (file) {
-                    classifier = getClassifier(file)
-                }
-            }
-
-            artifact (wpilibcSourcesFile) {
-                classifier = 'sources'
-            }
-
-            artifact (wpilibcHeaderFile) {
-                classifier = 'headers'
-            }
-
-            artifactId = "${wpilibCBaseArtifactId}"
-            groupId wpilibCArtifactGroupId
-            version pubVersion
-        }
-
-        wpilibcLinkScripts(MavenPublication) {
-            artifact allWpilibCLinkScriptZipTask
-
-            wpilibcLinkerFiles.each { file->
-                artifact (file) {
-                    classifier = getClassifier(file)
-                }
-            }
-
-            artifactId = "${wpilibCBaseArtifactId}-linkscripts"
-            groupId wpilibCArtifactGroupId
-            version pubVersion
-        }
-
-        wpilibcExamples(MavenPublication) {
-            artifact wpilibcExamplesZip
-
-            artifactId = "examples"
-            groupId wpilibCArtifactGroupId
-            version pubVersion
-        }
-        wpilibcTemplates(MavenPublication) {
-            artifact wpilibcTemplatesZip
-
-            artifactId = "templates"
-            groupId wpilibCArtifactGroupId
-            version pubVersion
-        }
-        wpilibjExamples(MavenPublication) {
-            artifact wpilibjExamplesZip
-
-            artifactId = "examples"
-            groupId javaArtifactGroupId
-            version pubVersion
-        }
-        wpilibjTemplates(MavenPublication) {
-            artifact wpilibjTemplatesZip
-
-            artifactId = "templates"
-            groupId javaArtifactGroupId
-            version pubVersion
-        }
+      }
     }
+  }
+}
+
+groups.each { key, value->
+  println key
+  value.each { key2, value2->
+    println key2
+    value2.each {
+      println it.get(2)
+    }
+  }
 }
