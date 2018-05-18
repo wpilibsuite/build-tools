@@ -16,6 +16,7 @@ stage('build') {
     }
     builds['windows'] = {
         node('windows') {
+            bat 'git config --global core.autocrlf false'
             git poll: true, url: 'https://github.com/wpilibsuite/allwpilib.git'
             bat '.\\gradlew.bat  clean build -PjenkinsBuild -PskipAthena -PreleaseBuild -PbuildAll --console=plain --stacktrace --refresh-dependencies'
             stash includes: '**/allOutputs/*', name: 'windows'
