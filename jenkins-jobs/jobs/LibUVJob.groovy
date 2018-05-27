@@ -1,4 +1,4 @@
-def basePath = 'libuv'
+def basePath = 'LibUV'
 folder(basePath)
 
 ['Windows', 'Mac', 'Linux'].each { platform ->
