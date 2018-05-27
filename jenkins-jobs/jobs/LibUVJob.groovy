@@ -25,7 +25,7 @@ folder(basePath)
     def prJob = job("$basePath/libuv $platform - PR") {
         label(platform.toLowerCase())
         steps {
-            bat('git submodule update --init --recursive')
+            batchFile('git submodule update --init --recursive')
             gradle {
                 tasks('clean')
                 tasks('build')
