@@ -5,7 +5,6 @@ folder(basePath)
     def prJob = job("$basePath/libuv $platform - PR") {
         label(platform.toLowerCase())
         steps {
-            shell('git submodule update --init --recursive')
             gradle {
                 tasks('clean')
                 tasks('build')
@@ -25,7 +24,6 @@ folder(basePath)
     def prJob = job("$basePath/libuv $platform - PR") {
         label(platform.toLowerCase())
         steps {
-            batchFile('git submodule update --init --recursive')
             gradle {
                 tasks('clean')
                 tasks('build')
@@ -43,7 +41,6 @@ folder(basePath)
 
 def armPrJob = job("$basePath/libuv ARM - PR") {
     steps {
-        shell('git submodule update --init --recursive')
         gradle {
             tasks('clean')
             tasks('build')
@@ -91,6 +88,11 @@ def setupPrJob(job, name) {
                     refspec('+refs/pull/*:refs/remotes/origin/pr/*')
                 }
                 branch('${sha1}')
+                extensions {
+                    submoduleOptions {
+                        disable false
+                    }
+                }
             }
         }
         triggers {
