@@ -1,11 +1,31 @@
 def basePath = 'LibUV'
 folder(basePath)
 
-['Windows', 'Mac', 'Linux'].each { platform ->
+['Mac', 'Linux'].each { platform ->
     def prJob = job("$basePath/libuv $platform - PR") {
         label(platform.toLowerCase())
         steps {
             shell('git submodule update --init --recursive')
+            gradle {
+                tasks('clean')
+                tasks('build')
+                switches('-PjenkinsBuild -PskipAthena -PreleaseBuild -PbuildAll --continue --console=plain --stacktrace --refresh-dependencies')
+                configure {
+                    passAllAsProjectProperties = false
+                    passAllAsSystemProperties = false
+                }
+            }
+        }
+    }
+    setupProperties(prJob)
+    setupPrJob(prJob, platform)
+}
+
+['Windows'].each { platform ->
+    def prJob = job("$basePath/libuv $platform - PR") {
+        label(platform.toLowerCase())
+        steps {
+            bat('git submodule update --init --recursive')
             gradle {
                 tasks('clean')
                 tasks('build')
