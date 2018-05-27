@@ -5,7 +5,7 @@ stage('build') {
             git poll: true, url: 'https://github.com/wpilibsuite/thirdparty-uvw.git'
             sh 'git submodule update --init --recursive'
             sh './gradlew clean build -PjenkinsBuild -PskipAthena -PreleaseBuild -PbuildAll -PreleaseType=OFFICIAL --console=plain --stacktrace --refresh-dependencies'
-            stash includes: 'build/outputs/**/*.*', name: 'linux'
+            stash includes: '**/allOutputs/*', name: 'linux'
         }
     }
     builds['mac'] = {
@@ -13,7 +13,7 @@ stage('build') {
             git poll: true, url: 'https://github.com/wpilibsuite/thirdparty-uvw.git'
             sh 'git submodule update --init --recursive'
             sh './gradlew clean build -PjenkinsBuild -PskipAthena -PreleaseBuild -PbuildAll -PreleaseType=OFFICIAL --console=plain --stacktrace --refresh-dependencies'
-            stash includes: 'build/outputs/**/*.*', name: 'mac'
+            stash includes: '**/allOutputs/*', name: 'mac'
         }
     }
     builds['windows'] = {
@@ -21,7 +21,7 @@ stage('build') {
             git poll: true, url: 'https://github.com/wpilibsuite/thirdparty-uvw.git'
             bat 'git submodule update --init --recursive'
             bat '.\\gradlew.bat  clean build -PjenkinsBuild -PskipAthena -PreleaseBuild -PbuildAll -PreleaseType=OFFICIAL --console=plain --stacktrace --refresh-dependencies'
-            stash includes: 'build/outputs/**/*.*', name: 'windows'
+            stash includes: '**/allOutputs/*', name: 'windows'
         }
     }
     builds['arm'] = {
@@ -30,7 +30,7 @@ stage('build') {
                 git poll: true, url: 'https://github.com/wpilibsuite/thirdparty-uvw.git'
                 sh 'git submodule update --init --recursive'
                 sh './gradlew clean build -PjenkinsBuild -PonlyAthena -PreleaseBuild -PbuildAll -PreleaseType=OFFICIAL --console=plain --stacktrace --refresh-dependencies'
-                stash includes: 'build/libs/**/*.jar, build/outputs/**/*.*', name: 'arm'
+                stash includes: '**/allOutputs/*', name: 'arm'
             }
         }
     }
