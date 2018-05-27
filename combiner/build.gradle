@@ -19,3 +19,7 @@ if (project.hasProperty('cscore')) {
 if (project.hasProperty('allwpilib')) {
     apply from: 'allwpilib/combine.gradle'
 }
+
+if (project.hasProperty('thirdparty')) {
+    apply from: 'thirdparty/combine.gradle'
+}

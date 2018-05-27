@@ -3,14 +3,13 @@ import java.util.regex.Pattern;
 
 apply plugin: 'maven-publish'
 
-if (!project.hasProperty('repo')) {
-    project.extensions.repo = 'development'
-}
-
 publishing {
     repositories {
         maven {
-            url "${System.getProperty('user.home')}/releases/maven/${project.repo}"
+            url "${System.getProperty('user.home')}/releases/maven/release"
+        }
+        maven {
+            url "${System.getProperty('user.home')}/releases/maven/development"
         }
     }
 }
@@ -25,8 +24,6 @@ def jarFiles = files(fileFinder.getFileNames(new File(projectDir, 'products').ab
 def allFiles = zipFiles + jarFiles
 
 def pubVersion = file(fileFinder.getFileNames(new File(projectDir, 'products').absolutePath, '**/allOutputs/version.txt').first()).text.trim()
-
-println pubVersion
 
 String regex = "([_M_]*)_GROUP_([^\\.]+)_ID_([^\\.]+)_CLS([^\\.]*)."
 Pattern pattern = Pattern.compile(regex, Pattern.MULTILINE);
