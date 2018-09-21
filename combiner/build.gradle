@@ -4,18 +4,6 @@ ext.getClassifier = { f->
     return classifier.substring(0, classifier.indexOf('.'))
 }
 
-if (project.hasProperty('wpiutil')) {
-    apply from: 'wpiutil/combine.gradle'
-}
-
-if (project.hasProperty('ntcore')) {
-    apply from: 'ntcore/combine.gradle'
-}
-
-if (project.hasProperty('cscore')) {
-    apply from: 'cscore/combine.gradle'
-}
-
 if (project.hasProperty('allwpilib')) {
     apply from: 'allwpilib/combine.gradle'
 }
