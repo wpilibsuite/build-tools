@@ -81,11 +81,24 @@ def setupBuildSteps(job, usePublish, properties = null) {
             gradle {
                 tasks('clean')
                 tasks('check')
-                if (usePublish) tasks('publish')
                 switches('-PjenkinsBuild')
                 if (properties != null) {
                     properties.each { prop ->
                         switches("-P$prop")
+                    }
+                }
+            }
+            if (usePublish) {
+                ['win32', 'win64', 'mac64', 'linux64'].each { platform ->
+                    gradle {
+                        tasks('publish')
+                        switches('-PjenkinsBuild')
+                        switches("-Pplatform=$platform")
+                        if (properties != null) {
+                            properties.each { prop ->
+                                switches("-P$prop")
+                            }
+                        }
                     }
                 }
             }
