@@ -23,3 +23,7 @@ if (project.hasProperty('allwpilib')) {
 if (project.hasProperty('thirdparty')) {
     apply from: 'thirdparty/combine.gradle'
 }
+
+wrapper {
+    gradleVersion = '4.10.2'
+}
