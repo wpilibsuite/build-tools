@@ -10,7 +10,7 @@ def setupGit(job) {
         scm {
             git {
                 remote {
-                    url('https://github.com/ThadHouse/RemotePublish.git')
+                    url('https://github.com/wpilibsuite/RemotePublish.git')
                     branch('*/master')
                 }
             }
