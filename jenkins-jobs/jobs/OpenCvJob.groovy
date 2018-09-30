@@ -108,6 +108,11 @@ def setupPrJob(job, prContext) {
                 // This is purposefully not a GString. This is a jenkins environment
                 // variable, not a groovy variable
                 branch('${sha1}')
+                extensions {
+                    submoduleOptions {
+                        disable false
+                    }
+                }
             }
         }
         triggers {
