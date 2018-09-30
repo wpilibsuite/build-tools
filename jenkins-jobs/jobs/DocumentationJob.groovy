@@ -32,7 +32,7 @@ def developmentJob = job("$basePath/Documentation - Development") {
 
 setupGit(developmentJob)
 setupProperties(developmentJob, true, 'development')
-setupBuildSteps(developmentJob, false, true)
+setupBuildSteps(developmentJob, true, true)
 
 def releaseJob = job("$basePath/Documentation - Release")
 
