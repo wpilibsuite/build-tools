@@ -3,6 +3,7 @@ stage('build') {
     builds['linux'] = {
         node('linux') {
             git poll: true, url: 'https://github.com/wpilibsuite/thirdparty-opencv.git'
+            sh 'git submodule update --init --recursive'
             sh './gradlew clean build -PjenkinsBuild --console=plain --stacktrace'
             stash includes: '**/allOutputs/*', name: 'linux'
         }
@@ -10,6 +11,7 @@ stage('build') {
     builds['mac'] = {
         node('mac') {
             git poll: true, url: 'https://github.com/wpilibsuite/thirdparty-opencv.git'
+            sh 'git submodule update --init --recursive'
             sh './gradlew clean build -PjenkinsBuild --console=plain --stacktrace'
             stash includes: '**/allOutputs/*', name: 'mac'
         }
@@ -17,6 +19,7 @@ stage('build') {
     builds['windows'] = {
         node('windows') {
             git poll: true, url: 'https://github.com/wpilibsuite/thirdparty-opencv.git'
+            bat 'git submodule update --init --recursive'
             bat '.\\gradlew.bat  clean build -PjenkinsBuild --console=plain --stacktrace'
             stash includes: '**/allOutputs/*', name: 'windows'
         }
@@ -25,6 +28,7 @@ stage('build') {
         node {
             ws("workspace/${env.JOB_NAME}/arm") {
                 git poll: true, url: 'https://github.com/wpilibsuite/thirdparty-opencv.git'
+                sh 'git submodule update --init --recursive'
                 sh './gradlew clean build -PjenkinsBuild -Pplatform=linux-athena --console=plain --stacktrace'
                 stash includes: '**/allOutputs/*', name: 'arm'
             }
