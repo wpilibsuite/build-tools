@@ -7,14 +7,7 @@ pool:
   vmImage: 'Ubuntu 16.04'
 
 steps:
-- task: Gradle@2
-  inputs:
-    workingDirectory: 'jenkins-jobs'
-    gradleWrapperFile: 'gradlew'
-    gradleOptions: '-Xmx3072m'
-    javaHomeOption: 'JDKVersion'
-    jdkVersionOption: '1.10'
-    jdkArchitectureOption: 'x64'
-    publishJUnitResults: false
-    testResultsFiles: '**/TEST-*.xml'
-    tasks: 'build'
+- script: |
+    cd jenkins-jobs
+    ./gradlew build
+  displayName: 'Run Gradle'
