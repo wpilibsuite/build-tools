@@ -90,7 +90,7 @@ def setupBuildSteps(job, usePublish, properties = null) {
         if (usePublish) {
             publishers {
                 archiveArtifacts {
-                    pattern('app/build/libs/*.jar')
+                    pattern('build/libs/*.jar')
                 }
             }
         }
