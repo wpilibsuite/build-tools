@@ -4,7 +4,7 @@ stage('build') {
         node('linux') {
             git poll: true, url: 'https://github.com/wpilibsuite/thirdparty-opencv.git'
             sh 'git submodule update --init --recursive'
-            sh 'rm -rf build buildShared'
+            sh 'rm -rf build buildShared buildDebug buildSharedDebug'
             sh './gradlew clean build -PjenkinsBuild --console=plain --stacktrace'
             stash includes: '**/allOutputs/*', name: 'linux'
         }
@@ -13,7 +13,7 @@ stage('build') {
         node('mac') {
             git poll: true, url: 'https://github.com/wpilibsuite/thirdparty-opencv.git'
             sh 'git submodule update --init --recursive'
-            sh 'rm -rf build buildShared'
+            sh 'rm -rf build buildShared buildDebug buildSharedDebug'
             sh './gradlew clean build -PjenkinsBuild --console=plain --stacktrace'
             stash includes: '**/allOutputs/*', name: 'mac'
         }
@@ -22,7 +22,7 @@ stage('build') {
         node('windows') {
             git poll: true, url: 'https://github.com/wpilibsuite/thirdparty-opencv.git'
             bat 'git submodule update --init --recursive'
-            bat 'del /s /q build buildShared'
+            bat 'del /s /q build buildShared buildDebug buildSharedDebug'
             bat 'call "C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Community\\VC\\Auxiliary\\Build\\vcvars32.bat" && .\\gradlew.bat  clean build -PjenkinsBuild -Pplatform=windows-x86 --console=plain --stacktrace'
             stash includes: '**/allOutputs/*', name: 'windows32'
         }
@@ -31,7 +31,7 @@ stage('build') {
         node('windows') {
             git poll: true, url: 'https://github.com/wpilibsuite/thirdparty-opencv.git'
             bat 'git submodule update --init --recursive'
-            bat 'del /s /q build buildShared'
+            bat 'del /s /q build buildShared buildDebug buildSharedDebug'
             bat 'call "C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Community\\VC\\Auxiliary\\Build\\vcvars64.bat" && .\\gradlew.bat  clean build -PjenkinsBuild --console=plain --stacktrace'
             stash includes: '**/allOutputs/*', name: 'windows64'
         }
@@ -41,9 +41,20 @@ stage('build') {
             ws("workspace/${env.JOB_NAME}/arm") {
                 git poll: true, url: 'https://github.com/wpilibsuite/thirdparty-opencv.git'
                 sh 'git submodule update --init --recursive'
-                sh 'rm -rf build buildShared'
+                sh 'rm -rf build buildShared buildDebug buildSharedDebug'
                 sh './gradlew clean build -PjenkinsBuild -Pplatform=linux-athena --console=plain --stacktrace'
                 stash includes: '**/allOutputs/*', name: 'arm'
+            }
+        }
+    }
+    builds['raspbian'] = {
+        node {
+            ws("workspace/${env.JOB_NAME}/raspbian") {
+                git poll: true, url: 'https://github.com/wpilibsuite/thirdparty-opencv.git'
+                sh 'git submodule update --init --recursive'
+                sh 'rm -rf build buildShared buildDebug buildSharedDebug'
+                sh './gradlew clean build -PjenkinsBuild -Pplatform=linux-raspbian --console=plain --stacktrace'
+                stash includes: '**/allOutputs/*', name: 'raspbian'
             }
         }
     }
@@ -62,6 +73,7 @@ stage('combine') {
                 unstash 'windows32'
                 unstash 'windows64'
                 unstash 'arm'
+                unstash 'raspbian'
             }
             sh 'chmod +x ./combiner/gradlew'
             sh 'cd ./combiner && ./gradlew publish -Pthirdparty'

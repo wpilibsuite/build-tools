@@ -1,25 +1,41 @@
 def basePath = 'OpenCV'
 folder(basePath)
 
-['Windows', 'Linux', 'Mac'].each { platform ->
+['Linux', 'Mac'].each { platform ->
     def prJob = job("$basePath/OpenCV $platform - PR") {
         label(platform.toLowerCase())
         steps {
-            gradle {
-                tasks('clean')
-                tasks('build')
-                switches('-PjenkinsBuild --console=plain --info  --continue --stacktrace')
-            }
+            shell('rm -rf build buildShared buildDebug buildSharedDebug')
+            shell('./gradlew clean build -PjenkinsBuild --console=plain --stacktrace')
         }
     }
     setupProperties(prJob)
     setupPrJob(prJob, platform)
 }
 
-def athenaPrJob = job("$basePath/OpenCV - PR Athena")
-setupPrJob(athenaPrJob, 'Athena')
-setupProperties(athenaPrJob)
-setupBuildSteps(athenaPrJob, false, ['platform=linux-athena'])
+['Windows32', 'Windows64'].each { platform ->
+    def prJob = job("$basePath/OpenCV $platform - PR") {
+        label(platform.toLowerCase())
+        steps {
+            batchFile('del /s /q build buildShared buildDebug buildSharedDebug')
+            batchFile('call "C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Community\\VC\\Auxiliary\\Build\\vcvars64.bat" && .\\gradlew.bat  clean build -PjenkinsBuild --console=plain --stacktrace')
+        }
+    }
+    setupProperties(prJob)
+    setupPrJob(prJob, platform)
+}
+
+['Athena', 'Raspbian'].each { platform ->
+    def prJob = job("$basePath/OpenCV $platform - PR") {
+        label(platform.toLowerCase())
+        steps {
+            shell('rm -rf build buildShared buildDebug buildSharedDebug')
+            shell('./gradlew clean build -PjenkinsBuild --console=plain --stacktrace')
+        }
+    }
+    setupProperties(prJob)
+    setupPrJob(prJob, platform)
+}
 
 def releaseJob = pipelineJob("$basePath/OpenCV - Release") {
     definition {
@@ -58,23 +74,6 @@ def setupProperties(job) {
         logRotator {
             numToKeep(50)
             artifactNumToKeep(10)
-        }
-    }
-}
-
-def setupBuildSteps(job, usePublish, properties = null, jobName = null) {
-    job.with {
-        steps {
-            gradle {
-                tasks('clean')
-                tasks('build')
-                switches('-PjenkinsBuild --console=plain --continue --stacktrace --info')
-                if (properties != null) {
-                    properties.each { prop ->
-                        switches("-P$prop")
-                    }
-                }
-            }
         }
     }
 }
