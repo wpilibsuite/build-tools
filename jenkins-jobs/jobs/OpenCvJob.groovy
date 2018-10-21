@@ -15,7 +15,7 @@ folder(basePath)
 
 ['Windows32', 'Windows64'].each { platform ->
     def prJob = job("$basePath/OpenCV $platform - PR") {
-        label(platform.toLowerCase())
+        label('windows')
         steps {
             batchFile('del /s /q build buildShared buildDebug buildSharedDebug')
             batchFile('call "C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Community\\VC\\Auxiliary\\Build\\vcvars64.bat" && .\\gradlew.bat  clean build -PjenkinsBuild --console=plain --stacktrace')
@@ -27,7 +27,6 @@ folder(basePath)
 
 ['Athena', 'Raspbian'].each { platform ->
     def prJob = job("$basePath/OpenCV $platform - PR") {
-        label(platform.toLowerCase())
         steps {
             shell('rm -rf build buildShared buildDebug buildSharedDebug')
             shell('./gradlew clean build -PjenkinsBuild --console=plain --stacktrace')
