@@ -13,7 +13,19 @@ folder(basePath)
     setupPrJob(prJob, platform)
 }
 
-['Windows32', 'Windows64'].each { platform ->
+['Windows32'].each { platform ->
+    def prJob = job("$basePath/OpenCV $platform - PR") {
+        label('windows')
+        steps {
+            batchFile('del /s /q build buildShared buildDebug buildSharedDebug')
+            batchFile('call "C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Community\\VC\\Auxiliary\\Build\\vcvars64.bat" && .\\gradlew.bat  clean build -PjenkinsBuild -Pplatform=windows-x86 --console=plain --stacktrace')
+        }
+    }
+    setupProperties(prJob)
+    setupPrJob(prJob, platform)
+}
+
+['Windows64'].each { platform ->
     def prJob = job("$basePath/OpenCV $platform - PR") {
         label('windows')
         steps {
@@ -29,7 +41,7 @@ folder(basePath)
     def prJob = job("$basePath/OpenCV $platform - PR") {
         steps {
             shell('rm -rf build buildShared buildDebug buildSharedDebug')
-            shell('./gradlew clean build -PjenkinsBuild --console=plain --stacktrace')
+            shell("./gradlew clean build -PjenkinsBuild -Pplatform=linux-${platform.toLowerCase()} --console=plain --stacktrace")
         }
     }
     setupProperties(prJob)
