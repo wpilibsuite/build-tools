@@ -21,24 +21,6 @@ setupPrJob(athenaPrJob, 'Athena')
 setupProperties(athenaPrJob)
 setupBuildSteps(athenaPrJob, false, ['platform=linux-athena'])
 
-def developmentJob = pipelineJob("$basePath/OpenCV - Development") {
-    definition {
-        cps {
-            try {
-                script(readFileFromWorkspace('jenkins-jobs/pipeline-scripts/opencv-development.groovy'))
-            } catch (Exception e) {
-                script(readFileFromWorkspace('pipeline-scripts/opencv-development.groovy'))
-            }
-            sandbox()
-        }
-    }
-    triggers {
-        scm('H/15 * * * *')
-    }
-}
-
-setupProperties(developmentJob)
-
 def releaseJob = pipelineJob("$basePath/OpenCV - Release") {
     definition {
         cps {
