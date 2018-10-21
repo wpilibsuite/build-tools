@@ -17,8 +17,8 @@ folder(basePath)
     def prJob = job("$basePath/OpenCV $platform - PR") {
         label(platform.toLowerCase())
         steps {
-            shell('del /s /q build buildShared buildDebug buildSharedDebug')
-            shell('call "C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Community\\VC\\Auxiliary\\Build\\vcvars64.bat" && .\\gradlew.bat  clean build -PjenkinsBuild --console=plain --stacktrace')
+            batchFile('del /s /q build buildShared buildDebug buildSharedDebug')
+            batchFile('call "C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Community\\VC\\Auxiliary\\Build\\vcvars64.bat" && .\\gradlew.bat  clean build -PjenkinsBuild --console=plain --stacktrace')
         }
     }
     setupProperties(prJob)
