@@ -19,7 +19,9 @@ def allOutput = file('outputs')
 def fileFinder = new FileNameFinder()
 
 new File(projectDir, 'products').eachDirRecurse {
-  println it
+  it.eachFile {
+    println it
+  }
 }
 
 def zipFiles = files(fileFinder.getFileNames(new File(projectDir, 'products').absolutePath, '**/allOutputs/*.zip'))
