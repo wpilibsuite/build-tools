@@ -5,7 +5,7 @@ stage('build') {
             git poll: true, url: 'https://github.com/wpilibsuite/ni-libraries.git'
             sh 'git submodule update --init --recursive'
             sh './gradlew clean build --console=plain --stacktrace --refresh-dependencies'
-            stash includes: '**/build/allOutputs/*', name: 'linux'
+            stash includes: 'build/allOutputs/*', name: 'linux'
         }
     }
 

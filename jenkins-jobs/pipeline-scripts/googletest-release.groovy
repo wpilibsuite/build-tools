@@ -5,7 +5,7 @@ stage('build') {
             git poll: true, url: 'https://github.com/wpilibsuite/thirdparty-googletest.git'
             sh 'git submodule update --init --recursive'
             sh './gradlew clean build -PjenkinsBuild -PskipAthena -PreleaseBuild -PbuildAll -PreleaseType=OFFICIAL --console=plain --stacktrace --refresh-dependencies'
-            stash includes: '**/build/allOutputs/*', name: 'linux'
+            stash includes: 'build/allOutputs/*', name: 'linux'
         }
     }
     builds['mac'] = {
@@ -13,7 +13,7 @@ stage('build') {
             git poll: true, url: 'https://github.com/wpilibsuite/thirdparty-googletest.git'
             sh 'git submodule update --init --recursive'
             sh './gradlew clean build -PjenkinsBuild -PskipAthena -PreleaseBuild -PbuildAll -PreleaseType=OFFICIAL --console=plain --stacktrace --refresh-dependencies'
-            stash includes: '**/build/allOutputs/*', name: 'mac'
+            stash includes: 'build/allOutputs/*', name: 'mac'
         }
     }
     builds['windows'] = {
@@ -21,7 +21,7 @@ stage('build') {
             git poll: true, url: 'https://github.com/wpilibsuite/thirdparty-googletest.git'
             bat 'git submodule update --init --recursive'
             bat '.\\gradlew.bat  clean build -PjenkinsBuild -PskipAthena -PreleaseBuild -PbuildAll -PreleaseType=OFFICIAL --console=plain --stacktrace --refresh-dependencies'
-            stash includes: '**/build/allOutputs/*', name: 'windows'
+            stash includes: 'build/allOutputs/*', name: 'windows'
         }
     }
     builds['arm'] = {
@@ -30,7 +30,7 @@ stage('build') {
                 git poll: true, url: 'https://github.com/wpilibsuite/thirdparty-googletest.git'
                 sh 'git submodule update --init --recursive'
                 sh './gradlew clean build -PjenkinsBuild -PonlyAthena -PreleaseBuild -PbuildAll -PreleaseType=OFFICIAL --console=plain --stacktrace --refresh-dependencies'
-                stash includes: '**/build/allOutputs/*', name: 'arm'
+                stash includes: 'build/allOutputs/*', name: 'arm'
             }
         }
     }

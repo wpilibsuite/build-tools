@@ -6,7 +6,7 @@ stage('build') {
             sh 'git submodule update --init --recursive'
             sh 'rm -rf build buildShared buildDebug buildSharedDebug'
             sh './gradlew clean build -PjenkinsBuild --console=plain --stacktrace'
-            stash includes: '**/build/allOutputs/*', name: 'linux'
+            stash includes: 'build/allOutputs/*', name: 'linux'
         }
     }
     builds['mac'] = {
@@ -15,7 +15,7 @@ stage('build') {
             sh 'git submodule update --init --recursive'
             sh 'rm -rf build buildShared buildDebug buildSharedDebug'
             sh './gradlew clean build -PjenkinsBuild --console=plain --stacktrace'
-            stash includes: '**/build/allOutputs/*', name: 'mac'
+            stash includes: 'build/allOutputs/*', name: 'mac'
         }
     }
     builds['windows32'] = {
@@ -24,7 +24,7 @@ stage('build') {
             bat 'git submodule update --init --recursive'
             bat 'del /s /q build buildShared buildDebug buildSharedDebug'
             bat 'call "C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Community\\VC\\Auxiliary\\Build\\vcvars32.bat" && .\\gradlew.bat  clean build -PjenkinsBuild -Pplatform=windows-x86 --console=plain --stacktrace'
-            stash includes: '**/build/allOutputs/*', name: 'windows32'
+            stash includes: 'build/allOutputs/*', name: 'windows32'
         }
     }
     builds['windows64'] = {
@@ -33,7 +33,7 @@ stage('build') {
             bat 'git submodule update --init --recursive'
             bat 'del /s /q build buildShared buildDebug buildSharedDebug'
             bat 'call "C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Community\\VC\\Auxiliary\\Build\\vcvars64.bat" && .\\gradlew.bat  clean build -PjenkinsBuild --console=plain --stacktrace'
-            stash includes: '**/build/allOutputs/*', name: 'windows64'
+            stash includes: 'build/allOutputs/*', name: 'windows64'
         }
     }
     builds['arm'] = {
@@ -43,7 +43,7 @@ stage('build') {
                 sh 'git submodule update --init --recursive'
                 sh 'rm -rf build buildShared buildDebug buildSharedDebug'
                 sh './gradlew clean build -PjenkinsBuild -Pplatform=linux-athena --console=plain --stacktrace'
-                stash includes: '**/build/allOutputs/*', name: 'arm'
+                stash includes: 'build/allOutputs/*', name: 'arm'
             }
         }
     }
@@ -54,7 +54,7 @@ stage('build') {
                 sh 'git submodule update --init --recursive'
                 sh 'rm -rf build buildShared buildDebug buildSharedDebug'
                 sh './gradlew clean build -PjenkinsBuild -Pplatform=linux-raspbian --console=plain --stacktrace'
-                stash includes: '**/build/allOutputs/*', name: 'raspbian'
+                stash includes: 'build/allOutputs/*', name: 'raspbian'
             }
         }
     }
