@@ -4,21 +4,21 @@ stage('build') {
         node('linux') {
             git poll: true, url: 'https://github.com/wpilibsuite/allwpilib.git'
             sh './gradlew clean build -PjenkinsBuild -PskipAthena -PreleaseBuild -PbuildAll --console=plain --rerun-tasks --stacktrace --refresh-dependencies'
-            stash includes: '**/allOutputs/*', name: 'linux'
+            stash includes: '**/build/allOutputs/*', name: 'linux'
         }
     }
     builds['mac'] = {
         node('mac') {
             git poll: true, url: 'https://github.com/wpilibsuite/allwpilib.git'
             sh './gradlew clean build -PjenkinsBuild -PskipAthena -PreleaseBuild -PbuildAll --console=plain --rerun-tasks --stacktrace --refresh-dependencies'
-            stash includes: '**/allOutputs/*', name: 'mac'
+            stash includes: '**/build/allOutputs/*', name: 'mac'
         }
     }
     builds['windows'] = {
         node('windows') {
             git poll: true, url: 'https://github.com/wpilibsuite/allwpilib.git'
             bat '.\\gradlew.bat  clean build -PjenkinsBuild -PskipAthena -PreleaseBuild -PbuildAll --console=plain --rerun-tasks --stacktrace --refresh-dependencies'
-            stash includes: '**/allOutputs/*', name: 'windows'
+            stash includes: '**/build/allOutputs/*', name: 'windows'
         }
     }
     builds['arm'] = {
@@ -26,7 +26,7 @@ stage('build') {
             ws("workspace/${env.JOB_NAME}/arm") {
                 git poll: true, url: 'https://github.com/wpilibsuite/allwpilib.git'
                 sh './gradlew clean build -PjenkinsBuild -PonlyAthena -PreleaseBuild -PbuildAll --console=plain --rerun-tasks --stacktrace --refresh-dependencies'
-                stash includes: '**/allOutputs/*', name: 'arm'
+                stash includes: '**/build/allOutputs/*', name: 'arm'
             }
         }
     }
