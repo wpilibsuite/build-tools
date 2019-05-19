@@ -4,8 +4,6 @@ stage('build') {
         node('linux') {
             git poll: true, url: 'https://github.com/wpilibsuite/thirdparty-googletest.git'
             sh 'git submodule update --init --recursive'
-            sh 'ls -la'
-            sh 'rm -rf combine/combiner/products'
             sh './gradlew clean build -PjenkinsBuild -PskipAthena -PreleaseBuild -PbuildAll -PreleaseType=OFFICIAL --console=plain --stacktrace --refresh-dependencies'
             stash includes: 'build/allOutputs/*', name: 'linux'
         }
