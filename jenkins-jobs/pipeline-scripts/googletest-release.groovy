@@ -4,6 +4,7 @@ stage('build') {
         node('linux') {
             git poll: true, url: 'https://github.com/wpilibsuite/thirdparty-googletest.git'
             sh 'git submodule update --init --recursive'
+            sh 'rm -rf combine/combiner/products'
             sh './gradlew clean build -PjenkinsBuild -PskipAthena -PreleaseBuild -PbuildAll -PreleaseType=OFFICIAL --console=plain --stacktrace --refresh-dependencies'
             stash includes: 'build/allOutputs/*', name: 'linux'
         }
@@ -43,7 +44,6 @@ stage('combine') {
         ws("workspace/${env.JOB_NAME}/combine") {
             git poll: false, url: 'https://github.com/wpilibsuite/build-tools.git'
             sh 'git clean -xfd'
-            sh 'rm -rf combiner/products'
             dir('combiner/products') {
                 unstash 'linux'
                 unstash 'mac'
