@@ -43,6 +43,7 @@ stage('combine') {
         ws("workspace/${env.JOB_NAME}/combine") {
             git poll: false, url: 'https://github.com/wpilibsuite/build-tools.git'
             sh 'git clean -xfd'
+            sh 'rm -rf combiner/products'
             dir('combiner/products') {
                 unstash 'linux'
                 unstash 'mac'
