@@ -8,7 +8,7 @@ folder(basePath)
             gradle {
                 tasks('clean')
                 tasks('build')
-                switches('-PjenkinsBuild -PskipAthena -PreleaseBuild -PbuildAll --console=plain --info  --continue --rerun-tasks --stacktrace --refresh-dependencies')
+                switches('-PjenkinsBuild -Pskiponlyathena -PreleaseBuild -PbuildAll --console=plain --info  --continue --rerun-tasks --stacktrace --refresh-dependencies')
             }
         }
     }
@@ -19,7 +19,7 @@ folder(basePath)
 def athenaPrJob = job("$basePath/WPILib - PR Athena")
 setupPrJob(athenaPrJob, 'Athena')
 setupProperties(athenaPrJob)
-setupBuildSteps(athenaPrJob, false, ['releaseBuild', 'onlyAthena'])
+setupBuildSteps(athenaPrJob, false, ['releaseBuild', 'onlylinuxathena'])
 
 def developmentJob = pipelineJob("$basePath/WPILib - Development") {
     definition {

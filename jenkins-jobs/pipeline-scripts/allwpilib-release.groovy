@@ -3,21 +3,21 @@ stage('build') {
     builds['linux'] = {
         node('linux') {
             git poll: true, url: 'https://github.com/wpilibsuite/allwpilib.git'
-            sh './gradlew clean build -PjenkinsBuild -PskipAthena -PreleaseBuild -PbuildAll -PreleaseType=OFFICIAL --console=plain --rerun-tasks --stacktrace --refresh-dependencies'
+            sh './gradlew clean build -PjenkinsBuild -Pskiponlyathena -PreleaseBuild -PbuildAll -PreleaseType=OFFICIAL --console=plain --rerun-tasks --stacktrace --refresh-dependencies'
             stash includes: 'build/allOutputs/*', name: 'linux'
         }
     }
     builds['mac'] = {
         node('mac') {
             git poll: true, url: 'https://github.com/wpilibsuite/allwpilib.git'
-            sh './gradlew clean build -PjenkinsBuild -PskipAthena -PreleaseBuild -PbuildAll -PreleaseType=OFFICIAL --console=plain --rerun-tasks --stacktrace --refresh-dependencies'
+            sh './gradlew clean build -PjenkinsBuild -Pskiponlyathena -PreleaseBuild -PbuildAll -PreleaseType=OFFICIAL --console=plain --rerun-tasks --stacktrace --refresh-dependencies'
             stash includes: 'build/allOutputs/*', name: 'mac'
         }
     }
     builds['windows'] = {
         node('windows') {
             git poll: true, url: 'https://github.com/wpilibsuite/allwpilib.git'
-            bat '.\\gradlew.bat  clean build -PjenkinsBuild -PskipAthena -PreleaseBuild -PbuildAll -PreleaseType=OFFICIAL --console=plain --rerun-tasks --stacktrace --refresh-dependencies'
+            bat '.\\gradlew.bat  clean build -PjenkinsBuild -Pskiponlyathena -PreleaseBuild -PbuildAll -PreleaseType=OFFICIAL --console=plain --rerun-tasks --stacktrace --refresh-dependencies'
             stash includes: 'build/allOutputs/*', name: 'windows'
         }
     }
@@ -25,7 +25,7 @@ stage('build') {
         node {
             ws("workspace/${env.JOB_NAME}/arm") {
                 git poll: true, url: 'https://github.com/wpilibsuite/allwpilib.git'
-                sh './gradlew clean build -PjenkinsBuild -PonlyAthena -PreleaseBuild -PbuildAll -PreleaseType=OFFICIAL --console=plain --rerun-tasks --stacktrace --refresh-dependencies'
+                sh './gradlew clean build -PjenkinsBuild -Ponlylinuxathena -PreleaseBuild -PbuildAll -PreleaseType=OFFICIAL --console=plain --rerun-tasks --stacktrace --refresh-dependencies'
                 stash includes: 'build/allOutputs/*', name: 'arm'
             }
         }
