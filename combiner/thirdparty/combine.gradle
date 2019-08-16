@@ -6,11 +6,14 @@ apply plugin: 'com.jfrog.artifactory'
 
 publishing {
     repositories {
-        maven {
-            url "${System.getProperty('user.home')}/releases/maven/release"
-        }
-        maven {
-            url "${System.getProperty('user.home')}/releases/maven/development"
+        if (project.hasProperty('releaseRepoPublish')) {
+          maven {
+              url "${System.getProperty('user.home')}/releases/maven/release"
+          }
+        } else {
+          maven {
+              url "${System.getProperty('user.home')}/releases/maven/development"
+          }
         }
     }
 }
