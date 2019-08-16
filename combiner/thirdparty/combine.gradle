@@ -144,7 +144,7 @@ publishing {
           version = pubVersion
         }
         if (System.getenv()['RUN_AZURE_ARTIFACTORY_RELEASE'] != null) {
-          artifactoryPublish {
+          project.artifactoryPublish {
               publications("${key}${key2}")
           }
         }
