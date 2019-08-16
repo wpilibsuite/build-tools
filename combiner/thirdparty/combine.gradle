@@ -138,16 +138,6 @@ groups.each { key, value->
   }
 }
 
-groups.each { key, value->
-  value.each { key2, value2->
-    if (System.getenv()['RUN_AZURE_ARTIFACTORY_RELEASE'] != null) {
-      artifactoryPublish {
-          publications("${key}${key2}")
-      }
-    }
-  }
-}
-
 publishing {
   publications {
     groups.each { key, value->
@@ -163,6 +153,15 @@ publishing {
           groupId = key.replace('_', '.')
           artifactId = key2
           version = pubVersion
+        }
+        groups.each { key, value->
+          value.each { key2, value2->
+            if (System.getenv()['RUN_AZURE_ARTIFACTORY_RELEASE'] != null) {
+              project.artifactoryPublish {
+                  publications("${key}${key2}")
+              }
+            }
+          }
         }
       }
     }
