@@ -22,7 +22,7 @@ if (System.getenv()['RUN_AZURE_ARTIFACTORY_RELEASE'] != null) {
           repository {
               repoKey = 'development'   // Artifactory repository key to publish to
               username = System.getenv()['ARTIFACTORY_PUBLISH_USERNAME']
-              password System.getenv()['ARTIFACTORY_PUBLISH_PASSWORD']
+              password = System.getenv()['ARTIFACTORY_PUBLISH_PASSWORD']
               maven = true
           }
       }
