@@ -2,6 +2,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 apply plugin: 'maven-publish'
+apply plugin: 'com.jfrog.artifactory'
 
 publishing {
     repositories {
@@ -14,19 +15,19 @@ publishing {
     }
 }
 
-if (System.getenv()['RUN_AZURE_MAVEN_RELEASE'] != null) {
-    publishing {
-        repositories {
-            maven {
-                credentials {
-                    username System.getenv()['MAVEN_PUBLISH_USER_NAME']
-                    password System.getenv()['MAVEN_PUBLISH_PASSWORD']
-                }
-                // change to point to your repo, e.g. http://my.org/repo
-                url = "https://maven.pkg.github.com/wpilibsuite/packages-testing"
-            }
-        }
-    }
+if (System.getenv()['RUN_AZURE_ARTIFACTORY_RELEASE'] != null) {
+  artifactory {
+      contextUrl = 'https://maven.wpilib.org:443/artifactory' // base artifactory url
+      publish {
+          repository {
+              repoKey = 'development'   // Artifactory repository key to publish to
+              username = System.getenv()['ARTIFACTORY_PUBLISH_USERNAME']
+              password System.getenv()['ARTIFACTORY_PUBLISH_PASSWORD']
+              maven = true
+          }
+      }
+
+  }
 }
 
 
@@ -141,6 +142,9 @@ publishing {
           groupId = key.replace('_', '.')
           artifactId = key2
           version = pubVersion
+        }
+        artifactoryPublish {
+            publications("${key}${key2}")
         }
       }
     }
