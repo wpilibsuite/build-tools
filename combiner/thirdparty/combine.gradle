@@ -25,6 +25,12 @@ if (System.getenv()['RUN_AZURE_ARTIFACTORY_RELEASE'] != null) {
               password = System.getenv()['ARTIFACTORY_PUBLISH_PASSWORD']
               maven = true
           }
+          repository {
+              repoKey = 'release'   // Artifactory repository key to publish to
+              username = System.getenv()['ARTIFACTORY_PUBLISH_USERNAME']
+              password = System.getenv()['ARTIFACTORY_PUBLISH_PASSWORD']
+              maven = true
+          }
       }
   }
   publish.dependsOn artifactoryPublish
@@ -127,6 +133,16 @@ groups.each { key, value->
   }
 }
 
+groups.each { key, value->
+  value.each { key2, value2->
+    if (System.getenv()['RUN_AZURE_ARTIFACTORY_RELEASE'] != null) {
+      artifactoryPublish {
+          publications("${key}${key2}")
+      }
+    }
+  }
+}
+
 publishing {
   publications {
     groups.each { key, value->
@@ -142,11 +158,6 @@ publishing {
           groupId = key.replace('_', '.')
           artifactId = key2
           version = pubVersion
-        }
-        if (System.getenv()['RUN_AZURE_ARTIFACTORY_RELEASE'] != null) {
-          project.artifactoryPublish {
-              publications("${key}${key2}")
-          }
         }
       }
     }
