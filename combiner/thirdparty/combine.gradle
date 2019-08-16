@@ -26,8 +26,8 @@ if (System.getenv()['RUN_AZURE_ARTIFACTORY_RELEASE'] != null) {
               maven = true
           }
       }
-
   }
+  publish.dependsOn artifactoryPublish
 }
 
 
