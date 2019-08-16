@@ -143,8 +143,10 @@ publishing {
           artifactId = key2
           version = pubVersion
         }
-        artifactoryPublish {
-            publications("${key}${key2}")
+        if (System.getenv()['RUN_AZURE_ARTIFACTORY_RELEASE'] != null) {
+          artifactoryPublish {
+              publications("${key}${key2}")
+          }
         }
       }
     }
