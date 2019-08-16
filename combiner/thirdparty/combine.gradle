@@ -14,6 +14,22 @@ publishing {
     }
 }
 
+if (System.getenv()['RUN_AZURE_MAVEN_RELEASE'] != null) {
+    publishing {
+        repositories {
+            maven {
+                credentials {
+                    username System.getenv()['MAVEN_PUBLISH_USER_NAME']
+                    password System.getenv()['MAVEN_PUBLISH_PASSWORD']
+                }
+                // change to point to your repo, e.g. http://my.org/repo
+                url = "https://maven.pkg.github.com/wpilibsuite/packages-testing"
+            }
+        }
+    }
+}
+
+
 def allOutput = file('outputs')
 
 def fileFinder = new FileNameFinder()
