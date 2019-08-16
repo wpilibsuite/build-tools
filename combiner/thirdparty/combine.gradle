@@ -20,13 +20,11 @@ if (System.getenv()['RUN_AZURE_ARTIFACTORY_RELEASE'] != null) {
       contextUrl = 'https://maven.wpilib.org:443/artifactory' // base artifactory url
       publish {
           repository {
-              repoKey = 'development'   // Artifactory repository key to publish to
-              username = System.getenv()['ARTIFACTORY_PUBLISH_USERNAME']
-              password = System.getenv()['ARTIFACTORY_PUBLISH_PASSWORD']
-              maven = true
-          }
-          repository {
-              repoKey = 'release'   // Artifactory repository key to publish to
+            if (project.hasProperty('releaseRepoPublish')) {
+              repoKey = 'release'
+            } else {
+              repoKey = 'development'
+            }
               username = System.getenv()['ARTIFACTORY_PUBLISH_USERNAME']
               password = System.getenv()['ARTIFACTORY_PUBLISH_PASSWORD']
               maven = true
@@ -38,6 +36,10 @@ if (System.getenv()['RUN_AZURE_ARTIFACTORY_RELEASE'] != null) {
 
 
 def allOutput = file('outputs')
+
+if (project.hasProperty('releaseRepoPublish')) {
+  allOutput = file('outputsRelease')
+}
 
 def fileFinder = new FileNameFinder()
 
