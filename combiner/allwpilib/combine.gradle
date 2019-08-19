@@ -2,6 +2,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 apply plugin: 'maven-publish'
+apply plugin: 'com.jfrog.artifactory'
 
 if (!project.hasProperty('repo')) {
     project.extensions.repo = 'development'
@@ -13,6 +14,25 @@ publishing {
             url "${System.getProperty('user.home')}/releases/maven/${project.repo}"
         }
     }
+}
+
+if (System.getenv()['RUN_AZURE_ARTIFACTORY_RELEASE'] != null) {
+  artifactory {
+    contextUrl = 'https://maven.wpilib.org:443/artifactory' // base artifactory url
+    publish {
+      repository {
+        if (project.hasProperty('releaseRepoPublish')) {
+          repoKey = 'release'
+        } else {
+          repoKey = 'development'
+        }
+        username = System.getenv()['ARTIFACTORY_PUBLISH_USERNAME']
+        password = System.getenv()['ARTIFACTORY_PUBLISH_PASSWORD']
+        maven = true
+      }
+    }
+  }
+  publish.dependsOn artifactoryPublish
 }
 
 def allOutput = file('outputs')
@@ -122,6 +142,11 @@ publishing {
           groupId = key.replace('_', '.')
           artifactId = key2
           version = pubVersion
+        }
+        if (System.getenv()['RUN_AZURE_ARTIFACTORY_RELEASE'] != null) {
+          project.artifactoryPublish {
+              publications("${key}${key2}")
+          }
         }
       }
     }
