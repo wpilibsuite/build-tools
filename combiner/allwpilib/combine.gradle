@@ -31,6 +31,7 @@ if (System.getenv()['RUN_AZURE_ARTIFACTORY_RELEASE'] != null) {
         maven = true
       }
     }
+    clientConfig.info.setBuildName('allwpilib')
   }
   publish.dependsOn artifactoryPublish
 }
