@@ -51,12 +51,6 @@ if (project.hasProperty('releaseRepoPublish')) {
 
 def fileFinder = new FileNameFinder()
 
-new File(projectDir, 'products').eachDirRecurse {
-  it.eachFile {
-    println it
-  }
-}
-
 def zipFiles = files(fileFinder.getFileNames(new File(projectDir, 'products').absolutePath, '**/allOutputs/*.zip'))
 def jarFiles = files(fileFinder.getFileNames(new File(projectDir, 'products').absolutePath, '**/allOutputs/*.jar'))
 
@@ -68,8 +62,6 @@ String regex = "([_M_]*)_GROUP_([^\\.]+)_ID_([^\\.]+)_CLS([^\\.]*)."
 Pattern pattern = Pattern.compile(regex, Pattern.MULTILINE);
 
 def groups = [:]
-
-
 
 for (File it : allFiles) {
 
@@ -105,42 +97,6 @@ for (File it : allFiles) {
 
   id << new Tuple(classifier, generateAll, it)
 
-}
-
-task beforePublish() {
-
-}
-
-groups.each { key, value->
-  value.each { key2, value2->
-    def allClassifiers = []
-    def isJar = false
-    value2.each {
-      if (it.get(1)) {
-        allClassifiers << it.get(2)
-        if (it.get(2).toString().endsWith('jar')) {
-          isJar = true
-        }
-      }
-    }
-    if (!allClassifiers.empty) {
-      def createdTask = project.tasks.create(key + key2 + 'all', isJar ? Jar : Zip) {
-        allClassifiers.each {
-          classifier = 'all'
-          baseName = key + key2
-          destinationDir = allOutput
-          duplicatesStrategy = 'exclude'
-
-          allClassifiers.each {
-            from project.zipTree(it)
-          }
-        }
-      }
-      beforePublish.dependsOn createdTask
-      value2 << new Tuple('all', false, createdTask)
-
-    }
-  }
 }
 
 publishing {
