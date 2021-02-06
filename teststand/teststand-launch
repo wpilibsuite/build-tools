@@ -1,9 +1,0 @@
-#!/bin/sh
-
-# wait for FRC_NetComm to startup
-sleep 5
-
-DAEMON=$1
-shift
-${DAEMON} $@
-
