@@ -1,5 +1,5 @@
 plugins {
-    id "com.jfrog.artifactory" version "4.29.3" apply false
+    id "com.jfrog.artifactory" version "5.2.5" apply false
 }
 
 ext.getClassifier = { f->
@@ -17,5 +17,5 @@ if (project.hasProperty('thirdparty')) {
 }
 
 wrapper {
-    gradleVersion = '8.4'
+    gradleVersion = '8.5'
 }
