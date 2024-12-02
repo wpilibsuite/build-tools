@@ -53,7 +53,7 @@ def allFiles = zipFiles + jarFiles
 
 def pubVersion = file(fileFinder.getFileNames(new File(projectDir, 'products').absolutePath, '**/allOutputs/version.txt').first()).text.trim()
 
-String regex = "([_M_]*)_GROUP_([^\\.]+)_ID_([^\\.]+)_CLS([^\\.]*)."
+String regex = "_GROUP_([^\\.]+)_ID_([^\\.]+)_CLS([^\\.]*)."
 Pattern pattern = Pattern.compile(regex, Pattern.MULTILINE);
 
 def groups = [:]
@@ -67,11 +67,9 @@ for (File it : allFiles) {
     continue
   }
 
-  def generateAll = matcher.group(1) == '_M_'
-
-  def groupId = matcher.group(2)
-  def artifactId = matcher.group(3)
-  def classifier = matcher.group(4)
+  def groupId = matcher.group(1)
+  def artifactId = matcher.group(2)
+  def classifier = matcher.group(3)
 
   if (!classifier.empty) {
     classifier = classifier.substring(1)
@@ -90,7 +88,7 @@ for (File it : allFiles) {
     group[artifactId] = id
   }
 
-  id << new Tuple(classifier, generateAll, it)
+  id << new Tuple(classifier, it)
 
 }
 
@@ -100,7 +98,7 @@ publishing {
       value.each { key2, value2->
         "${key}${key2}"(MavenPublication) {
           value2.each { t->
-            artifact (t.get(2)) {
+            artifact (t.get(1)) {
               if (!t.get(0).empty) {
                 classifier = t.get(0)
               }
